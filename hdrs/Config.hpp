@@ -3,8 +3,9 @@
 //
 
 #ifndef ZERO_WEBSERV_CONFIG_HPP
-#define ZERO_WEBSERV_CONFIG_HPP
+# define ZERO_WEBSERV_CONFIG_HPP
 
+# include "Utils.hpp"
 
 class Config {
 private:

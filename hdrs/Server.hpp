@@ -7,7 +7,8 @@
 
 # include "Utils.hpp"
 # include "IServer.hpp"
-# include "../hdrs/Request.hpp"
+# include "Request.hpp"
+# include "Config.hpp"
 
 # define TIMEOUT 1
 
