@@ -18,7 +18,7 @@ Request::~Request()
 
 void	Request::parseRequest()
 {
-	std::vector<std::string>	params = utils::split(_rawRequest, "\n");
+	std::vector<std::string>	params = utils::split(_rawRequest, "\r\n");
 	std::vector<std::string>	tmp;
 
 	tmp = utils::split(params.at(0));

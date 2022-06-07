@@ -7,7 +7,10 @@
 
 
 class Config {
+private:
 
+
+public:
 };
 
 

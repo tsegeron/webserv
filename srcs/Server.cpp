@@ -33,8 +33,10 @@ Server &Server::operator = (const Server &src)
 
 Server::~Server()
 {
-	delete _servSocket;
-	_servSocket = nullptr;
+	delete	_servSocket;
+	delete	_request;
+	_servSocket	= nullptr;
+	_request	= nullptr;
 	utils::closeLogFile();
 }
 
@@ -91,16 +93,26 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 	}
 }
 
+void	print_request(std::string const &request)
+{
+	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+	std::cout << request << std::endl;
+	std::cout << request.length() << std::endl;
+	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+}
+
 void	Server::handler(long clientSocket)
 {
 	char	buffer[10000];
 
 	if (recv(int(clientSocket), buffer, 10000, 0) < 0)
 		utils::logging("Server: recv failed", 2);
-	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
-	std::cout << std::string(buffer) << std::endl;
-	std::cout << std::string(buffer).length() << std::endl;
-	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+	_request = new Request(buffer);
+	_request->parseRequest();
+	utils::logging(_request->getMethod() + " " + _request->getPath());
+
+
+	delete _request;
 }
 
 void	Server::responder()

@@ -7,18 +7,20 @@
 
 # include "Utils.hpp"
 # include "IServer.hpp"
+# include "../hdrs/Request.hpp"
 
 # define TIMEOUT 1
 
 struct Server: IServer {
 private:
 	SimpSocket		*_servSocket;
+	Request			*_request;
 	fd_set			_currentSockets, _readSockets, _writeSockets;
 	struct timeval	_timeout;
 
 	void		accepter(struct sockaddr_in &, int &) final;
-	void		handler(long);
-	void		responder();
+	void		handler(long) final;
+	void		responder() final;
 
 public:
 	Server(int domain = AF_INET,
@@ -31,9 +33,9 @@ public:
 	Server &operator = (Server const &src);
 	virtual ~Server();
 
-	SimpSocket	*getServSocket() const { return this->_servSocket; };
+	SimpSocket	*getServSocket() const final { return this->_servSocket; };
 
-	void		runServer();
+	void		runServer() final;
 
 };
 

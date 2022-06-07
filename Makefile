@@ -10,8 +10,10 @@ FLDR_S	=	srcs/
 FLDR_H	=	hdrs/
 
 NAME		=	webserv
-HDRS		=	IServer.hpp	Server.hpp	SimpSocket.hpp	Utils.hpp
-SRCS		=	main.cpp	Server.cpp	SimpSocket.cpp	Utils.cpp
+HDRS		=	IServer.hpp	Server.hpp	SimpSocket.hpp	Utils.hpp	Request.hpp	\
+				Config.hpp
+SRCS		=	main.cpp	Server.cpp	SimpSocket.cpp	Utils.cpp	Request.cpp	\
+				Config.cpp
 
 SRC		=	$(addprefix ${FLDR_S},${SRCS})
 HDR		=	$(addprefix ${FLDR_H},${HDRS})
@@ -31,7 +33,7 @@ clean:
 			@${RM} ${OBJS}
 
 fclean:		clean
-			@${RM} ${NAME}
+			@${RM} ${NAME} webserv.logs
 
 re:			fclean all
 

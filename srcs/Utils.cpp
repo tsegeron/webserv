@@ -55,7 +55,7 @@ namespace utils {
 			tmp = src.substr(0, pos);
 			if (!tmp.empty())
 				splitted.push_back(tmp);
-			src.erase(0, pos + 1);
+			src.erase(0, pos + delimiter.size());
 		}
 		if (!src.empty())
 			splitted.push_back(src);

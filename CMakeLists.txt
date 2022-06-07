@@ -9,8 +9,10 @@ add_executable(zero_webserv
         srcs/Server.cpp
         srcs/SimpSocket.cpp
         srcs/Request.cpp
+        srcs/Config.cpp
         hdrs/Utils.hpp
         hdrs/Server.hpp
         hdrs/SimpSocket.hpp
         hdrs/IServer.hpp
-        hdrs/Request.hpp)
+        hdrs/Request.hpp
+        hdrs/Config.hpp)
