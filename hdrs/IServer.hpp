@@ -9,7 +9,7 @@
 
 class IServer {
 private:
-	virtual bool		accepter(struct sockaddr_in, int) = 0;
+	virtual bool		accepter(struct sockaddr_in &, int &) = 0;
 	virtual void		handler(long) = 0;
 	virtual void		responder() = 0;
 

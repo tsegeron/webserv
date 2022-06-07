@@ -25,9 +25,9 @@ namespace utils {
 		openLogFile() << timestamp + msg << std::endl;
 
 		if (fd == 1)
-			std::cout << timestamp << msg << std::endl;
+			std::cout << BLUE << timestamp << RESET << GREEN << msg << RESET << std::endl;
 		else
-			std::cerr << timestamp << msg << std::endl;
+			std::cerr << BLUE << timestamp << RESET << RED << msg << RESET << std::endl;
 
 	}
 

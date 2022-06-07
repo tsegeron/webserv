@@ -8,12 +8,15 @@
 # include "Utils.hpp"
 # include "IServer.hpp"
 
+# define TIMEOUT 5
+
 struct Server: IServer {
 private:
-	SimpSocket	*_servSocket;
-	fd_set		_currentSockets, _readySockets;
+	SimpSocket		*_servSocket;
+	fd_set			_currentSockets, _readySockets;
+	struct timeval	*_timeout;
 
-	bool		accepter(struct sockaddr_in, int) final;
+	bool		accepter(struct sockaddr_in &, int &) final;
 	void		handler(long);
 	void		responder();
 

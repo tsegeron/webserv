@@ -9,6 +9,9 @@ Server::Server(int domain, int type, int protocol, int port, u_long interface, i
 	_servSocket->bindSocketToLocalSockaddr();
 	_servSocket->listenForConnectionsOnSocket(backlog);
 
+	_timeout->tv_sec = TIMEOUT;
+	_timeout->tv_usec = 0;
+	utils::openLogFile();
 	FD_ZERO(&_currentSockets);
 	FD_ZERO(&_readySockets);
 	FD_SET(_servSocket->getServerFd(), &_currentSockets);
@@ -44,12 +47,13 @@ void	Server::runServer()
 		accepter(address, addrLen);
 }
 
-bool	Server::accepter(struct sockaddr_in address, int addrLen)
+bool	Server::accepter(struct sockaddr_in &address, int &addrLen)
 {
 	int					socket;
+	struct timeval		*timeout;
 
 	_readySockets = _currentSockets;
-	if (select(FD_SETSIZE, &_readySockets, nullptr, nullptr, nullptr) == -1)
+	if (select(10, &_readySockets, nullptr, nullptr, nullptr) == -1)
 		utils::logging(strerror(errno));
 
 	for (int i = 0; i < FD_SETSIZE; i++)
@@ -80,7 +84,9 @@ void	Server::handler(long clientSocket)
 
 	if (recv(int(clientSocket), buffer, 10000, 0) < 0)
 		utils::logging("Server: recv failed", 2);
+	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
 	std::cout << buffer << std::endl;
+	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
 void	Server::responder()
