@@ -9,11 +9,11 @@ Server::Server(int domain, int type, int protocol, int port, u_long interface, i
 	_servSocket->bindSocketToLocalSockaddr();
 	_servSocket->listenForConnectionsOnSocket(backlog);
 
-	_timeout->tv_sec = TIMEOUT;
-	_timeout->tv_usec = 0;
+	_timeout.tv_sec = TIMEOUT;
+	_timeout.tv_usec = 0;
 	utils::openLogFile();
 	FD_ZERO(&_currentSockets);
-	FD_ZERO(&_readySockets);
+	FD_ZERO(&_readSockets);
 	FD_SET(_servSocket->getServerFd(), &_currentSockets);
 }
 
@@ -26,7 +26,7 @@ Server &Server::operator = (const Server &src)
 {
 	this->_servSocket = src._servSocket;
 	this->_currentSockets = src._currentSockets;
-	this->_readySockets = src._readySockets;
+	this->_readSockets = src._readSockets;
 
 	return *this;
 }
@@ -47,35 +47,48 @@ void	Server::runServer()
 		accepter(address, addrLen);
 }
 
-bool	Server::accepter(struct sockaddr_in &address, int &addrLen)
+void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 {
+	std::string			dots[4] = {"", ".", "..", "..."};
+	struct timeval		timeout;
 	int					socket;
-	struct timeval		*timeout;
+	int					selectStat = 0;
+	int					n = -1;
 
-	_readySockets = _currentSockets;
-	if (select(10, &_readySockets, nullptr, nullptr, nullptr) == -1)
-		utils::logging(strerror(errno));
-
-	for (int i = 0; i < FD_SETSIZE; i++)
+	while (selectStat == 0)
 	{
-		if (FD_ISSET(i, &_readySockets))
+		timeout = _timeout;
+		std::cout << YELLOW << "\33[2\rKWaiting for connection" << dots[++n] << RESET << std::flush;
+		if (n == 3)
+			n = -1;
+		_readSockets = _currentSockets;
+		FD_ZERO(&_writeSockets);
+		selectStat = select(FD_SETSIZE, &_readSockets, &_writeSockets, nullptr, &timeout); // max num of sockets' fds
+	}
+	std::cout << std::endl;
+	if (selectStat == -1)
+		utils::logging(strerror(errno));
+	else
+	{
+		for (int i = 0; i < FD_SETSIZE; i++)
 		{
-			if (i == _servSocket->getServerFd())
+			if (FD_ISSET(i, &_readSockets))
 			{
-				socket = accept(_servSocket->getServerFd(),
-								(struct sockaddr *)&address,
-								(socklen_t *)&addrLen);
-				FD_SET(socket, &_currentSockets);
-			}
-			else
-			{
-				handler(i);
-				FD_CLR(i, &_currentSockets);
+				if (i == _servSocket->getServerFd())
+				{
+					socket = accept(_servSocket->getServerFd(),
+									(struct sockaddr *)&address,
+									(socklen_t *)&addrLen);
+					FD_SET(socket, &_currentSockets);
+				}
+				else
+				{
+					handler(i);
+					FD_CLR(i, &_currentSockets);
+				}
 			}
 		}
 	}
-
-	return true;
 }
 
 void	Server::handler(long clientSocket)
