@@ -1,0 +1,3 @@
+/Users/gernesto/Desktop/zero_webserv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/gernesto/Desktop/zero_webserv/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/gernesto/Desktop/zero_webserv/cmake-build-debug/CMakeFiles/zero_webserv.dir
