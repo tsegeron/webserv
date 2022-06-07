@@ -8,6 +8,7 @@
 # include <string>
 # include <iostream>
 # include <fstream>
+# include <vector>
 
 # define RESET   "\033[0m"
 # define BLACK   "\033[30m"
@@ -21,9 +22,12 @@
 
 namespace utils {
 
-	std::ofstream	openLogFile();
-	void			logging(std::string const &, int fd = 1);
-	void			closeLogFile();
+	std::ofstream				openLogFile();
+	void						logging(std::string const &, int fd = 1);
+	void						closeLogFile();
+	std::string					&trim(std::string &, std::string const &chars=" ");
+	std::vector<std::string>	split(std::string src, std::string const &delimiter=" ");
+
 }
 
 #endif //ZERO_WEBSERV_UTILS_HPP

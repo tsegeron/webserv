@@ -72,12 +72,6 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 
 build cmake_object_order_depends_target_zero_webserv: phony || CMakeFiles/zero_webserv.dir
 
-build CMakeFiles/zero_webserv.dir/srcs/main.cpp.o: CXX_COMPILER__zero_webserv_Debug /Users/gernesto/Desktop/zero_webserv/srcs/main.cpp || cmake_object_order_depends_target_zero_webserv
-  DEP_FILE = CMakeFiles/zero_webserv.dir/srcs/main.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++11
-  OBJECT_DIR = CMakeFiles/zero_webserv.dir
-  OBJECT_FILE_DIR = CMakeFiles/zero_webserv.dir/srcs
-
 build CMakeFiles/zero_webserv.dir/srcs/Utils.cpp.o: CXX_COMPILER__zero_webserv_Debug /Users/gernesto/Desktop/zero_webserv/srcs/Utils.cpp || cmake_object_order_depends_target_zero_webserv
   DEP_FILE = CMakeFiles/zero_webserv.dir/srcs/Utils.cpp.o.d
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++11
@@ -90,6 +84,18 @@ build CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o: CXX_COMPILER__zero_webserv_
   OBJECT_DIR = CMakeFiles/zero_webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/zero_webserv.dir/srcs
 
+build CMakeFiles/zero_webserv.dir/srcs/SimpSocket.cpp.o: CXX_COMPILER__zero_webserv_Debug /Users/gernesto/Desktop/zero_webserv/srcs/SimpSocket.cpp || cmake_object_order_depends_target_zero_webserv
+  DEP_FILE = CMakeFiles/zero_webserv.dir/srcs/SimpSocket.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++11
+  OBJECT_DIR = CMakeFiles/zero_webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/zero_webserv.dir/srcs
+
+build CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o: CXX_COMPILER__zero_webserv_Debug /Users/gernesto/Desktop/zero_webserv/srcs/Request.cpp || cmake_object_order_depends_target_zero_webserv
+  DEP_FILE = CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++11
+  OBJECT_DIR = CMakeFiles/zero_webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/zero_webserv.dir/srcs
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target zero_webserv
@@ -98,7 +104,7 @@ build CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o: CXX_COMPILER__zero_webserv_
 #############################################
 # Link the executable zero_webserv
 
-build zero_webserv: CXX_EXECUTABLE_LINKER__zero_webserv_Debug CMakeFiles/zero_webserv.dir/srcs/main.cpp.o CMakeFiles/zero_webserv.dir/srcs/Utils.cpp.o CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o
+build zero_webserv: CXX_EXECUTABLE_LINKER__zero_webserv_Debug CMakeFiles/zero_webserv.dir/srcs/Utils.cpp.o CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o CMakeFiles/zero_webserv.dir/srcs/SimpSocket.cpp.o CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
   OBJECT_DIR = CMakeFiles/zero_webserv.dir
   POST_BUILD = :

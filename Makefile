@@ -15,23 +15,23 @@ SRCS		=	main.cpp	Server.cpp	SimpSocket.cpp	Utils.cpp
 
 SRC		=	$(addprefix ${FLDR_S},${SRCS})
 HDR		=	$(addprefix ${FLDR_H},${HDRS})
-OBJS	=	${SRC:%.c=%.o}
+OBJS	=	${SRC:%.cpp=%.o}
 
 # ------------------------------------------------------------------------------
 
 %.o:		%.cpp	${HDR}
-			${CC} ${FLAGS1} ${FLAGS2} -c -o $@ $<
+			@${CC} ${FLAGS1} ${FLAGS2} -c -o $@ $<
 
 ${NAME}:	${OBJS}
-			${CC} ${FLAGS1} ${FLAGS2} ${OBJS} -o ${NAME}
+			@${CC} ${FLAGS1} ${FLAGS2} ${OBJS} -o ${NAME}
 
 all:		${NAME}
 
 clean:
-			#${RM} ${OBJS}
+			@${RM} ${OBJS}
 
 fclean:		clean
-			#${RM} ${NAME}
+			@${RM} ${NAME}
 
 re:			fclean all
 

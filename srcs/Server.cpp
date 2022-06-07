@@ -50,7 +50,7 @@ void	Server::runServer()
 void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 {
 	std::string			dots[4] = {"", ".", "..", "..."};
-	struct timeval		timeout;
+	struct timeval		timeout{};
 	int					socket;
 	int					selectStat = 0;
 	int					n = -1;
@@ -58,14 +58,14 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 	while (selectStat == 0)
 	{
 		timeout = _timeout;
-		std::cout << YELLOW << "\33[2\rKWaiting for connection" << dots[++n] << RESET << std::flush;
+		std::cout << YELLOW << "\33[2K\rWaiting for connection" << dots[++n] << RESET << std::flush;
 		if (n == 3)
 			n = -1;
 		_readSockets = _currentSockets;
 		FD_ZERO(&_writeSockets);
 		selectStat = select(FD_SETSIZE, &_readSockets, &_writeSockets, nullptr, &timeout); // max num of sockets' fds
 	}
-	std::cout << std::endl;
+	std::cout << "\33[2K\r";
 	if (selectStat == -1)
 		utils::logging(strerror(errno));
 	else
@@ -98,7 +98,8 @@ void	Server::handler(long clientSocket)
 	if (recv(int(clientSocket), buffer, 10000, 0) < 0)
 		utils::logging("Server: recv failed", 2);
 	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
-	std::cout << buffer << std::endl;
+	std::cout << std::string(buffer) << std::endl;
+	std::cout << std::string(buffer).length() << std::endl;
 	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
