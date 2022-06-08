@@ -11,7 +11,6 @@ Server::Server(int domain, int type, int protocol, int port, u_long interface, i
 
 	_timeout.tv_sec = TIMEOUT;
 	_timeout.tv_usec = 0;
-	utils::openLogFile();
 	FD_ZERO(&_currentSockets);
 	FD_ZERO(&_readSockets);
 	FD_SET(_servSocket->getServerFd(), &_currentSockets);
@@ -24,9 +23,9 @@ Server::Server(Server const &src)
 
 Server &Server::operator = (const Server &src)
 {
-	this->_servSocket = src._servSocket;
-	this->_currentSockets = src._currentSockets;
-	this->_readSockets = src._readSockets;
+	this->_servSocket		= src._servSocket;
+	this->_currentSockets	= src._currentSockets;
+	this->_readSockets		= src._readSockets;
 
 	return *this;
 }
@@ -35,9 +34,11 @@ Server::~Server()
 {
 	delete	_servSocket;
 	delete	_request;
+	delete	_urls;
 	_servSocket	= nullptr;
 	_request	= nullptr;
-	utils::closeLogFile();
+	_urls		= nullptr;
+//	utils::closeLogFile();
 }
 
 void	Server::runServer()
@@ -93,11 +94,32 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 	}
 }
 
-void	print_request(std::string const &request)
+void	print_rawRequest(std::string const &request)
 {
 	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
 	std::cout << request << std::endl;
 	std::cout << request.length() << std::endl;
+	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+}
+
+void	print_fullRequest(std::map<std::string, std::string> request)
+{
+	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+	for (const auto &elem : request)
+		std::cout << elem.first << " : " << elem.second << std::endl;
+	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+}
+
+void	print_shortRequest(Request const *request)
+{
+	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+//	for (const auto &elem : request)
+//		std::cout << elem.first << " : " << elem.second << std::endl;
+	std::cout	<< request->getMethod() << " "
+				<< request->getPath() << " "
+				<< request->getAccept() << std::endl
+				<< "Body: " << request->getBody() << std::endl;
+//				<< request->getCookie() << std::endl;
 	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
@@ -109,7 +131,10 @@ void	Server::handler(long clientSocket)
 		utils::logging("Server: recv failed", 2);
 	_request = new Request(buffer);
 	_request->parseRequest();
-	utils::logging(_request->getMethod() + " " + _request->getPath());
+//	print_rawRequest(std::string(buffer));
+//	print_fullRequest(_request->getRequest());
+	print_shortRequest(_request);
+	utils::logging(_request->getMethod() + " " + _request->getPath()); //
 
 
 	delete _request;

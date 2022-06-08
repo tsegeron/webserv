@@ -9,6 +9,7 @@
 # include "IServer.hpp"
 # include "Request.hpp"
 # include "Config.hpp"
+# include "Urls.hpp"
 
 # define TIMEOUT 1
 
@@ -16,6 +17,7 @@ struct Server: IServer {
 private:
 	SimpSocket		*_servSocket;
 	Request			*_request;
+	Urls			*_urls;
 	fd_set			_currentSockets, _readSockets, _writeSockets;
 	struct timeval	_timeout;
 

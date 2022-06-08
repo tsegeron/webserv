@@ -26,6 +26,7 @@ OBJS	=	${SRC:%.cpp=%.o}
 
 ${NAME}:	${OBJS}
 			@${CC} ${FLAGS1} ${FLAGS2} ${OBJS} -o ${NAME}
+			@${MAKE} clean
 
 all:		${NAME}
 

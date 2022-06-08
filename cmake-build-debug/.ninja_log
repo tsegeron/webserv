@@ -1,8 +1,15 @@
 # ninja log v5
-1	1180	1654632324000000000	CMakeFiles/zero_webserv.dir/srcs/SimpSocket.cpp.o	946c35d69ed9e73d
+2	611	1654713735000000000	CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o	7e77ce5dbc264b09
+1	105	1654714913000000000	build.ninja	18a978e8cbd91be5
+2	422	1654701461000000000	CMakeFiles/zero_webserv.dir/srcs/Config.cpp.o	9f84054d17091ae5
+12	962	1654713500000000000	CMakeFiles/zero_webserv.dir/srcs/main.cpp.o	80f50c9b23d5c4c5
+611	784	1654713735000000000	zero_webserv	e382f1d92f09d1d3
+2	694	1654713705000000000	CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o	9995675a16b70d9c
 1	558	1654639659000000000	CMakeFiles/zero_webserv.dir/srcs/Utils.cpp.o	5c5829d9b3d00bce
-2	649	1654639490000000000	CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o	9995675a16b70d9c
-558	615	1654639659000000000	zero_webserv	12fe11b1c9df83e4
-2	591	1654639490000000000	CMakeFiles/zero_webserv.dir/srcs/main.cpp.o	80f50c9b23d5c4c5
-1	109	1654640296000000000	build.ninja	18a978e8cbd91be5
-2	577	1654639578000000000	CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o	7e77ce5dbc264b09
+1	1180	1654632324000000000	CMakeFiles/zero_webserv.dir/srcs/SimpSocket.cpp.o	946c35d69ed9e73d
+0	180	1654714913000000000	build.ninja	18a978e8cbd91be5
+4	66	1654714913000000000	CMakeFiles/zero_webserv.dir/srcs/Urls.cpp.o	1bdb0a3a99a3aac5
+3	758	1654714913000000000	CMakeFiles/zero_webserv.dir/srcs/main.cpp.o	80f50c9b23d5c4c5
+3	837	1654714913000000000	CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o	7e77ce5dbc264b09
+3	855	1654714913000000000	CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o	9995675a16b70d9c
+855	1005	1654714914000000000	zero_webserv	5eb1dc75ef16bf0a

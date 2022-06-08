@@ -25,6 +25,8 @@ public:
 	std::string							getMethod() const { return _request.at("Method"); };
 	std::string							getPath() const { return _request.at("Path"); };
 	std::string							getCookie() const { return _request.at("Cookie"); };
+	std::string							getAccept() const { return _request.at("Accept"); };
+	std::string							getBody() const { return _request.at("Body"); };
 };
 
 

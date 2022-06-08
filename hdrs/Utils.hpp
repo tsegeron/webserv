@@ -22,9 +22,8 @@
 
 namespace utils {
 
-	std::ofstream				openLogFile();
+	void						createLogFile();
 	void						logging(std::string const &, int fd = 1);
-	void						closeLogFile();
 	std::string					&trim(std::string &, std::string const &chars=" ");
 	std::vector<std::string>	split(std::string src, std::string const &delimiter=" ");
 
