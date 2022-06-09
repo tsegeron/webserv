@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fstream>
-#include "hdrs/Utils.hpp"
+#include "hdrs/Config.hpp"
 
 
 std::string	readFile()
@@ -23,8 +23,7 @@ std::string	readFile()
 
 void	foo()
 {
-	std::string							data = readFile();
-	std::vector<std::string>			pairParamsRoutes = utils::split(data, "\n\n");
+	std::vector<std::string>			pairParamsRoutes = utils::split(readFile(), "\n\n");
 	std::vector<std::string>			tmp;
 	std::vector<std::string>			tmp2;
 	std::map<std::string, std::string>	params;
@@ -44,5 +43,21 @@ void	foo()
 
 int main(int ac, char **av)
 {
-	foo();
+//	foo();
+	Config	config(av);
+
+	if (!config.is_valid())
+		return 1;
+	config.parse();
+
+	for (const auto &elem : config.getParams())
+		std::cout << elem.first << " : " << elem.second << std::endl;
+//	std::cout	<< config.params.host << std::endl
+//				<< config.params.port << std::endl
+//				<< config.params.server_name << std::endl
+//				<< config.params.error_pages_dir << std::endl
+//				<< config.params.root << std::endl
+//				<< config.params.default_error_page << std::endl
+//				<< config.params.body_size_limit << std::endl;
+
 }
