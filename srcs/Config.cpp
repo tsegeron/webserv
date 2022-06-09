@@ -54,9 +54,32 @@ Config::~Config()
 
 }
 
+
+
+
 void	Config::parse()
 {
+	std::string					data = readFile();
+	std::vector<std::string>	pairParamsRoutes = utils::split(data, "\n\n");
 
+	for (const auto &elem : pairParamsRoutes)
+		std::cout << elem << std::endl;
+}
+
+
+
+std::string	Config::readFile() const
+{
+	std::ifstream	f("config/default.conf");
+	std::string		data;
+	std::string		tmp;
+
+	while (std::getline(f, tmp))
+		data += tmp + "\n";
+
+	f.close();
+
+	return data;
 }
 
 // checks if such config file exists and if it has proper format

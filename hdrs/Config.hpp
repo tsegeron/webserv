@@ -16,6 +16,10 @@ private:
 	std::string	_configFilePathShort;
 	std::string	_configFilePathFull;
 
+	static bool	exists(std::string const &filename);
+	static bool	is_config(std::string const &filename);
+	std::string	readFile() const;
+
 public:
 	Config();
 	Config(const char **av);
@@ -24,8 +28,6 @@ public:
 	virtual ~Config();
 
 	bool	is_valid() const; // checks if such config file exists and if it has proper format
-	static bool	exists(std::string const &filename);
-	static bool	is_config(std::string const &filename);
 
 	void	parse();
 };

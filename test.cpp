@@ -3,33 +3,46 @@
 #include <map>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <fstream>
+#include "hdrs/Utils.hpp"
 
-bool	exists(std::string const &filename)
+
+std::string	readFile()
 {
-	return ::access(filename.c_str(), F_OK) == 0;
+	std::ifstream	f("config/default.conf");
+	std::string		data;
+	std::string		tmp;
+
+	while (std::getline(f, tmp))
+		data += tmp + "\n";
+
+	f.close();
+
+	return data;
 }
 
-bool	is_config(std::string const &filename)
+void	foo()
 {
-	struct stat	s;
+	std::string							data = readFile();
+	std::vector<std::string>			pairParamsRoutes = utils::split(data, "\n\n");
+	std::vector<std::string>			tmp;
+	std::vector<std::string>			tmp2;
+	std::map<std::string, std::string>	params;
 
-	if (::lstat(filename.c_str(), &s) == 0 && !filename.empty()) // is it valid path?
+	tmp = utils::split(pairParamsRoutes.at(0), "\n");
+	for (size_t i = 0; i < tmp.size(); ++i)
 	{
-		if (S_ISREG(s.st_mode) && ::access(filename.c_str(), X_OK) != 0) // is it text file, not executable?
-		{
-			size_t	dot = filename.find_last_of(".");
-
-			if (dot != std::string::npos) // is it .conf format?
-				if (!filename.substr(0, dot).empty() && filename.substr(dot + 1) == "conf")
-					return true;
-		}
+		tmp2 = utils::split(tmp[i], ": ");
+		params[tmp2.at(0)] = tmp2.at(1);
 	}
-	return false;
+
+	for (const auto &elem : params)
+		std::cout << elem.first << " : " << elem.second << std::endl << "------------------------------------" << std::endl;
 }
+
+
 
 int main(int ac, char **av)
 {
-//	std::cout << is_config("config/default.conf") << std::endl;
-	std::cout << is_config("d.conf") << std::endl;
-//	std::cout << exists("webserv.logs") << std::endl;
+	foo();
 }
