@@ -12,12 +12,14 @@
 # include "Urls.hpp"
 
 # define TIMEOUT 1
+# define BACKLOG 1
 
 struct Server: IServer {
 private:
-	SimpSocket		*_servSocket;
-	Request			*_request;
-	Urls			*_urls;
+	SimpSocket		_servSocket;
+	Config			_config;
+	Request			_request;
+//	Urls			*_urls;
 	fd_set			_currentSockets, _readSockets, _writeSockets;
 	struct timeval	_timeout;
 
@@ -26,20 +28,26 @@ private:
 	void		responder() final;
 
 public:
-	Server(int domain = AF_INET,
-		   int type = SOCK_STREAM,
-		   int protocol = 0,
-		   int port = 8080,
-		   u_long interface = INADDR_ANY,
-		   int backlog = 1000);
+//	Server(int domain = AF_INET,
+//		   int type = SOCK_STREAM,
+//		   int protocol = 0,
+//		   int port = 8080,
+//		   u_long interface = INADDR_ANY,
+//		   int backlog = 1000);
+	Server(char **av);
 	Server(Server const &src);
 	Server &operator = (Server const &src);
 	virtual ~Server();
 
-	SimpSocket	*getServSocket() const final { return this->_servSocket; };
+	SimpSocket	getServSocket() const final { return this->_servSocket; };
 
 	void		runServer() final;
 
+//	struct	ConfigException: std::exception {
+//		const char	*what() const throw() {
+//			return "[Exception] Config: check logs file for more info";
+//		}
+//	};
 };
 
 

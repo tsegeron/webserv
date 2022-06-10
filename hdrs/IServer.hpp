@@ -16,7 +16,7 @@ private:
 public:
 	virtual void		runServer() = 0;
 
-	virtual SimpSocket	*getServSocket() const = 0;
+	virtual SimpSocket	getServSocket() const = 0;
 
 };
 

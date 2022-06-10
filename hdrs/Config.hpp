@@ -6,41 +6,30 @@
 # define ZERO_WEBSERV_CONFIG_HPP
 
 # include "Utils.hpp"
-# include "unistd.h"
+# include "ConfigParams.hpp"
+# include <unistd.h>
 # include <sys/stat.h>
 # include <map>
 
 # define CONF_DIR "config/"
 
-struct Params {
-	typedef std::map<std::string, std::string>				strPairMap;
-	typedef std::vector<std::map<std::string, std::string>> ElonMask;
-	std::string	host;
-	std::string	server_name;
-	std::string	error_pages_dir;
-	std::string	root;
-	std::string	default_error_page;
-	strPairMap	error_pages;
-	int			port;
-	size_t		body_size_limit;
-	ElonMask	locations;
-};
-
 class Config {
-public:
 	typedef std::map<std::string, std::string>	strPairMap;
-	Params	params;
 
 private:
-	std::string	_configFilePathShort;
-	std::string	_configFilePathFull;
-	strPairMap	_params;
+	std::string			_configFilePathShort;
+	std::string			_configFilePathFull;
+	std::string			_error_msg;
+	std::vector<Params>	_params; // ConfigParams.hpp
+	Params				_tmp;
 
 	static bool	exists(std::string const &filename);
 	static bool	is_config(std::string const &filename);
 	std::string	readFile() const;
 	void		parseParams(std::string const &);
 	void		parseRoutes(std::string const &);
+	bool		is_params_valid();
+	void		parse();
 
 public:
 	Config(char **av);
@@ -49,10 +38,10 @@ public:
 	virtual ~Config();
 
 
-	bool	is_valid() const; // checks if such config file exists and if it has proper format
-	void	parse();
+	bool	is_valid();
 
-	strPairMap	getParams() const { return _params; };
+	std::vector<Params>	getParams() const { return _params; };
+	std::string			getErrorMsg() const { return _error_msg; };
 };
 
 

@@ -11,7 +11,7 @@ FLDR_H	=	hdrs/
 
 NAME		=	webserv
 HDRS		=	IServer.hpp	Server.hpp	SimpSocket.hpp	Utils.hpp	Request.hpp	\
-				Config.hpp
+				Config.hpp	ConfigParams.hpp
 SRCS		=	main.cpp	Server.cpp	SimpSocket.cpp	Utils.cpp	Request.cpp	\
 				Config.cpp
 

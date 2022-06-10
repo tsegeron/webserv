@@ -17,4 +17,5 @@ add_executable(zero_webserv
         hdrs/IServer.hpp
         hdrs/Request.hpp
         hdrs/Config.hpp
-        hdrs/Urls.hpp)
+        hdrs/Urls.hpp
+        hdrs/ConfigParams.hpp)

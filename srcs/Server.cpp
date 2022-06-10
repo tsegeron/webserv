@@ -1,19 +1,20 @@
 #include "../hdrs/Server.hpp"
 
-Server::Server(int domain, int type, int protocol, int port, u_long interface, int backlog)
+Server::Server(char **av)
 {
-	_servSocket = new SimpSocket(domain, type, protocol, port, interface);
+	_servSocket = SimpSocket(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY);
 
-	_servSocket->createSocket();
-	_servSocket->allowMultipleConnectionsOnSocket();
-	_servSocket->bindSocketToLocalSockaddr();
-	_servSocket->listenForConnectionsOnSocket(backlog);
+	_servSocket.createSocket();
+	_servSocket.allowMultipleConnectionsOnSocket();
+	_servSocket.bindSocketToLocalSockaddr();
+	_servSocket.listenForConnectionsOnSocket(BACKLOG);
 
 	_timeout.tv_sec = TIMEOUT;
 	_timeout.tv_usec = 0;
 	FD_ZERO(&_currentSockets);
 	FD_ZERO(&_readSockets);
-	FD_SET(_servSocket->getServerFd(), &_currentSockets);
+	FD_ZERO(&_writeSockets);
+	FD_SET(_servSocket.getServerFd(), &_currentSockets);
 }
 
 Server::Server(Server const &src)
@@ -32,19 +33,14 @@ Server &Server::operator = (const Server &src)
 
 Server::~Server()
 {
-	delete	_servSocket;
-	delete	_request;
-	delete	_urls;
-	_servSocket	= nullptr;
-	_request	= nullptr;
-	_urls		= nullptr;
-//	utils::closeLogFile();
+//	delete	_urls;
+//	_urls		= nullptr;
 }
 
 void	Server::runServer()
 {
-	struct sockaddr_in	address	= _servSocket->getAddress();
-	int					addrLen	= _servSocket->getAddressLen();
+	struct sockaddr_in	address	= _servSocket.getAddress();
+	int					addrLen	= _servSocket.getAddressLen();
 
 	while (true)
 		accepter(address, addrLen);
@@ -77,9 +73,9 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 		{
 			if (FD_ISSET(i, &_readSockets))
 			{
-				if (i == _servSocket->getServerFd())
+				if (i == _servSocket.getServerFd())
 				{
-					socket = accept(_servSocket->getServerFd(),
+					socket = accept(_servSocket.getServerFd(),
 									(struct sockaddr *)&address,
 									(socklen_t *)&addrLen);
 					FD_SET(socket, &_currentSockets);
@@ -102,7 +98,7 @@ void	print_rawRequest(std::string const &request)
 	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
-void	print_fullRequest(std::map<std::string, std::string> request)
+void	print_fullRequest(std::map<std::string, std::string> &request)
 {
 	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
 	for (const auto &elem : request)
@@ -110,16 +106,16 @@ void	print_fullRequest(std::map<std::string, std::string> request)
 	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
-void	print_shortRequest(Request const *request)
+void	print_shortRequest(Request const &request)
 {
 	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
 //	for (const auto &elem : request)
 //		std::cout << elem.first << " : " << elem.second << std::endl;
-	std::cout	<< request->getMethod() << " "
-				<< request->getPath() << " "
-				<< request->getAccept() << std::endl
-				<< "Body: " << request->getBody() << std::endl;
-//				<< request->getCookie() << std::endl;
+	std::cout	<< request.getMethod() << " "
+				<< request.getPath() << " "
+				<< request.getAccept() << std::endl
+				<< "Body: " << request.getBody() << std::endl;
+//				<< request.getCookie() << std::endl;
 	std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
 }
 
@@ -129,12 +125,12 @@ void	Server::handler(long clientSocket)
 
 	if (recv(int(clientSocket), buffer, 10000, 0) < 0)
 		utils::logging("Server: recv failed", 2);
-	_request = new Request(buffer);
-	_request->parseRequest();
+	_request = Request(buffer);
+	_request.parseRequest();
 //	print_rawRequest(std::string(buffer));
 //	print_fullRequest(_request->getRequest());
 	print_shortRequest(_request);
-	utils::logging(_request->getMethod() + " " + _request->getPath()); //
+	utils::logging(_request.getMethod() + " " + _request.getPath()); //
 
 
 	delete _request;
