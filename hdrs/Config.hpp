@@ -14,18 +14,21 @@
 # define CONF_DIR "config/"
 
 class Config {
-	typedef std::map<std::string, std::string>	strPairMap;
+	typedef typename std::map<std::string, std::string>			strPairMap;
+	typedef typename std::vector<std::pair<std::string, int>>	HostsPortsPair;
 
 private:
 	std::string			_configFilePathShort;
 	std::string			_configFilePathFull;
 	std::string			_error_msg;
 	std::vector<Params>	_params; // ConfigParams.hpp
+	HostsPortsPair		_hostsPorts;
 	Params				_tmp;
 
 	static bool	exists(std::string const &filename);
 	static bool	is_config(std::string const &filename);
 	std::string	readFile() const;
+//	void
 	void		parseParams(std::string const &);
 	void		parseRoutes(std::string const &);
 	bool		is_params_valid();
@@ -42,6 +45,7 @@ public:
 
 	std::vector<Params>	getParams() const { return _params; };
 	std::string			getErrorMsg() const { return _error_msg; };
+	HostsPortsPair		getHostsPortsPair() const {  return _hostsPorts; };
 };
 
 

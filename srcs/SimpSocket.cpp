@@ -6,28 +6,21 @@
 #include "../hdrs/SimpSocket.hpp"
 
 // Default constructor
-SimpSocket::SimpSocket(int domain, int type, int protocol,
-							int port, u_long interface)
-		: domain(domain), type(type), protocol(protocol), port(port), interface(interface)
+SimpSocket::SimpSocket(std::string const &host, int port)
+	: host(host), port(port)
 {
-	// defining sockaddr_in structure
+	domain					= AF_INET;
+	type					= SOCK_STREAM;
+	protocol				= 0;
+	interface				= INADDR_ANY;
 	address.sin_family		= domain;
 	address.sin_addr.s_addr	= htonl(interface);
 	address.sin_port		= htons(port);
-	insertSocketParams();
+	serverFd				= socket(domain, type, protocol);
 
 	addrLen					= sizeof(address);
 
 	memset(address.sin_zero, 0, sizeof address.sin_zero);
-}
-
-void	SimpSocket::insertSocketParams()
-{
-	socketParameters.insert(std::pair<std::string, int>("domain", domain));
-	socketParameters.insert(std::pair<std::string, int>("type", type));
-	socketParameters.insert(std::pair<std::string, int>("protocol", protocol));
-	socketParameters.insert(std::pair<std::string, int>("port", port));
-	socketParameters.insert(std::pair<std::string, int>("interface", int(interface)));
 }
 
 SimpSocket::SimpSocket(const SimpSocket &other)
@@ -39,10 +32,15 @@ SimpSocket & SimpSocket::operator=(SimpSocket const &other)
 {
 	if (this != &other)
 	{
-		this->serverFd = other.serverFd;
-		this->port = other.port;
-		this->interface = other.interface;
-		this->socketParameters = other.socketParameters;
+		domain		= other.domain;
+		type		= other.type;
+		protocol	= other.protocol;
+		host		= other.host;
+		port		= other.port;
+		interface	= other.interface;
+		serverFd	= other.serverFd;
+		address		= other.address;
+		addrLen		= other.addrLen;
 	}
 	return *this;
 }
@@ -53,12 +51,11 @@ SimpSocket::~SimpSocket()
 }
 
 // returns true if an endpoint for communication was successfully created
-bool	SimpSocket::createSocket()
+bool	SimpSocket::is_socket_valid()
 {
-	serverFd = socket(domain, type, protocol);
 	if (serverFd < 0)
 	{
-		utils::logging(strerror(errno), 2);
+		utils::logging("socket: " + std::string(strerror(errno)), 2);
 		return false;
 	}
 	return true;
@@ -70,7 +67,7 @@ bool	SimpSocket::allowMultipleConnectionsOnSocket()
 
 	if (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, static_cast<void *>(&opt), sizeof(opt)) < 0)
 	{
-		utils::logging(strerror(errno), 2);
+		utils::logging("setsockopt: " + std::string(strerror(errno)), 2);
 		return false;
 	}
 	return true;
@@ -80,7 +77,7 @@ bool	SimpSocket::bindSocketToLocalSockaddr()
 {
 	if (bind(serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 	{
-		utils::logging(strerror(errno), 2);
+		utils::logging("bind: " + std::string(strerror(errno)), 2);
 		return false;
 	}
 	return true;
@@ -88,10 +85,10 @@ bool	SimpSocket::bindSocketToLocalSockaddr()
 
 bool	SimpSocket::initiateConnectionOnSocket()
 {
-	address.sin_addr.s_addr = inet_addr("127.0.0.1");
+	address.sin_addr.s_addr = inet_addr(host.c_str());
 	if (address.sin_addr.s_addr < 0 || connect(serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 	{
-		utils::logging(strerror(errno), 2);
+		utils::logging("inet_addr: " + std::string(strerror(errno)), 2);
 		return false;
 	}
 	return true;
@@ -99,11 +96,9 @@ bool	SimpSocket::initiateConnectionOnSocket()
 
 bool	SimpSocket::listenForConnectionsOnSocket(int bcklg)
 {
-	setBacklog(bcklg);
-
 	if (listen(serverFd, bcklg) < 0)
 	{
-		utils::logging(strerror(errno), 2);
+		utils::logging("listen: " + std::string(strerror(errno)), 2);
 		return false;
 	}
 	return true;

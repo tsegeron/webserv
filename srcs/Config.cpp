@@ -4,8 +4,6 @@
 
 #include "../hdrs/Config.hpp"
 
-typedef std::vector<std::map<std::string, std::string>> ElonMask;
-
 Config::Config(char **av)
 {
 	std::ofstream	configFile;
@@ -65,7 +63,7 @@ bool	Config::is_valid()
 			utils::logging(_error_msg, 2);
 			return false;
 		}
-		utils::logging("applying config " + _configFilePathShort);
+		utils::logging("Applying config " + _configFilePathShort);
 		return true;
 	}
 	utils::logging("Aborted. No config file was provided, neither default nor custom.", 2);
@@ -74,10 +72,44 @@ bool	Config::is_valid()
 
 bool	Config::is_params_valid()
 {
+	std::map<std::string, std::vector<int>>	portsDuplicateCheck;
+
+	if (!_error_msg.empty())
+		return false;
 	if (_params.empty())
 	{
 		_error_msg = "Insufficient configuration";
 		return false;
+	}
+	for (u_int i = 0; i < _hostsPorts.size(); ++i)
+	{
+		if (std::find(portsDuplicateCheck[_hostsPorts[i].first].begin(),
+					  portsDuplicateCheck[_hostsPorts[i].first].end(),
+					  _hostsPorts[i].second) != portsDuplicateCheck[_hostsPorts[i].first].end())
+		{
+			_error_msg = "[Config] Ports duplication on the same host was found. --> " +
+					_hostsPorts[i].first + ":" + std::to_string(_hostsPorts[i].second);
+			return false;
+		}
+		portsDuplicateCheck[_hostsPorts[i].first].push_back(_hostsPorts[i].second);
+	}
+	portsDuplicateCheck.clear();
+	return true;
+}
+
+void	Config::parse()
+{
+	std::vector<std::string>	pairParamsRoutes = utils::split(readFile(), "\n\n");
+
+	if (pairParamsRoutes.empty() || pairParamsRoutes.size() % 2)
+		return;
+	for (size_t i = 0; i < pairParamsRoutes.size(); i += 2)
+	{
+		parseParams(pairParamsRoutes.at(i));
+		parseRoutes(utils::trim(pairParamsRoutes.at(i + 1), "\n"));
+		if (!_tmp.empty())
+			_params.push_back(_tmp);
+		_tmp.clear();
 	}
 	for (size_t i = 0; i < _params.size(); ++i)
 	{
@@ -104,25 +136,9 @@ bool	Config::is_params_valid()
 			_params[i].root.empty() || _params[i].locations.empty())
 		{
 			_error_msg = "Make sure all the parameters are set";
-			return false;
+			return ;
 		}
-	}
-	return true;
-}
-
-void	Config::parse()
-{
-	std::vector<std::string>	pairParamsRoutes = utils::split(readFile(), "\n\n");
-
-	if (pairParamsRoutes.empty() || pairParamsRoutes.size() % 2)
-		return;
-	for (size_t i = 0; i < pairParamsRoutes.size(); i += 2)
-	{
-		parseParams(pairParamsRoutes.at(i));
-		parseRoutes(utils::trim(pairParamsRoutes.at(i + 1), "\n"));
-		if (!_tmp.empty())
-			_params.push_back(_tmp);
-		_tmp.clear();
+		_hostsPorts.push_back(std::pair<std::string, int>(_params[i].host, _params[i].port));
 	}
 }
 
@@ -180,14 +196,28 @@ void	Config::parseRoutes(std::string const &src)
 	for (size_t i = 0; i < routesList.size(); ++i)
 	{
 		tmp = utils::split(routesList.at(i), " {");
+		if (tmp.size() != 2)
+		{
+			_error_msg = "Config error: expected '{' after location";
+			return;
+		}
 		map["uri"] = tmp.at(0);
 		tmp = utils::split(tmp.at(1), "\n");
+		if (std::find(tmp.begin(), tmp.end(), "}") == std::end(tmp))
+		{
+			_error_msg = "Config error: expected closing curly braces '}' after location parameters";
+			return;
+		}
 		tmp.erase(std::find(tmp.begin(), tmp.end(), "}"));
 		for (size_t j = 0; j < tmp.size(); ++j)
 		{
 			valPair = utils::split(utils::trim(tmp.at(j)), ": ");
-			if (!valPair.at(0).empty())
-				map[valPair.at(0)] = valPair.at(1);
+			if (valPair.size() < 2)
+			{
+				_error_msg = "[Config] Parse error: error near " + valPair.at(0);
+				return;
+			}
+			map[valPair.at(0)] = valPair.at(1);
 		}
 		_tmp.locations.push_back(map);
 		map.clear();

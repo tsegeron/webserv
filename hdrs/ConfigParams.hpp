@@ -31,6 +31,8 @@ struct Params {
 		port = other.port;
 		body_size_limit = other.body_size_limit;
 		locations = other.locations;
+
+		return *this;
 	}
 	void	clear() {
 		host = "";

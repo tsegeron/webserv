@@ -12,19 +12,23 @@
 # include "Urls.hpp"
 
 # define TIMEOUT 1
-# define BACKLOG 1
+# define BACKLOG 100
 
 struct Server: IServer {
+	typedef typename std::vector<SimpSocket *>	Sockets;
+	typedef typename std::map<int, Request *>	Requests;
+	typedef typename std::vector<int>			Listen;
 private:
-	SimpSocket		_servSocket;
-	Config			_config;
-	Request			_request;
+	Sockets			_servSockets;
+	Config			*_config;
+	Requests		_requests;
 //	Urls			*_urls;
 	fd_set			_currentSockets, _readSockets, _writeSockets;
+	Listen			_fds;
 	struct timeval	_timeout;
 
 	void		accepter(struct sockaddr_in &, int &) final;
-	void		handler(long) final;
+	void		handler(int) final;
 	void		responder() final;
 
 public:
@@ -39,15 +43,20 @@ public:
 	Server &operator = (Server const &src);
 	virtual ~Server();
 
-	SimpSocket	getServSocket() const final { return this->_servSocket; };
+	Sockets		getServSocket() const { return this->_servSockets; };
 
 	void		runServer() final;
 
-//	struct	ConfigException: std::exception {
-//		const char	*what() const throw() {
-//			return "[Exception] Config: check logs file for more info";
-//		}
-//	};
+	struct	ConfigException: std::exception {
+		const char	*what() const throw() {
+			return "[Exception] Bad Config: check logs file for more info";
+		}
+	};
+	struct	SocketException: std::exception {
+		const char	*what() const throw() {
+			return "[System Exception] Socket: check logs file for more info";
+		}
+	};
 };
 
 

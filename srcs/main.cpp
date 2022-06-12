@@ -15,7 +15,7 @@ int main(int ac, char **av)
 	}
 	catch (std::exception &ex)
 	{
-		std::cerr << ex.what() << std::endl;
+		std::cerr << RED << ex.what() << RESET << std::endl;
 	}
 
 	return 0;
