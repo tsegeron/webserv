@@ -8,13 +8,14 @@
 # include "Utils.hpp"
 # include "IServer.hpp"
 # include "Request.hpp"
+# include "Response.hpp"
 # include "Config.hpp"
 # include "Urls.hpp"
 
 # define TIMEOUT 1
 # define BACKLOG 100
 
-struct Server: IServer {
+struct Server {
 	typedef typename std::vector<SimpSocket *>	Sockets;
 	typedef typename std::map<int, Request *>	Requests;
 	typedef typename std::map<int, Params>		Listen;
@@ -27,17 +28,11 @@ private:
 	Listen			_fds;
 	struct timeval	_timeout;
 
-	void		accepter(struct sockaddr_in &, int &) final;
-	void		handler(int) final;
-	void		responder() final;
+	void		accepter(struct sockaddr_in &, int &);
+	void		handler(int);
+//	void		responder(int, Request const *);
 
 public:
-//	Server(int domain = AF_INET,
-//		   int type = SOCK_STREAM,
-//		   int protocol = 0,
-//		   int port = 8080,
-//		   u_long interface = INADDR_ANY,
-//		   int backlog = 1000);
 	Server(char **av);
 	Server(Server const &src);
 	Server &operator = (Server const &src);

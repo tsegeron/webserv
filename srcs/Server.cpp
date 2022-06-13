@@ -38,7 +38,7 @@ Server::Server(Server const &src)
 
 Server &Server::operator = (const Server &src)
 {
-	this->_sockets		= src._sockets;
+	this->_sockets			= src._sockets;
 	this->_currentSockets	= src._currentSockets;
 	this->_readSockets		= src._readSockets;
 
@@ -150,14 +150,19 @@ void	Server::handler(int clientSocket)
 
 	_requests[clientSocket] = new Request(std::string(buffer));
 	_requests[clientSocket]->parseRequest();
+//	print_rawRequest(std::string(buffer));
 //	print_fullRequest(_requests[clientSocket]->getRequest());
 	print_shortRequest(_requests[clientSocket]);
 	utils::logging(_requests[clientSocket]->getMethod() + " " + _requests[clientSocket]->getPath());
 
+	Response	response(clientSocket, _requests[clientSocket]);
+
+
 	delete _requests[clientSocket];
 }
 
-void	Server::responder()
-{
-
-}
+//void	Server::responder(int clientSocket, Request const *request)
+//{
+//	std::string	response = utils::readFile("error_pages/404.html");
+//	send(clientSocket, response.c_str(), response.size() + 1, 0);
+//}

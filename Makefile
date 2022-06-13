@@ -10,10 +10,13 @@ FLDR_S	=	srcs/
 FLDR_H	=	hdrs/
 
 NAME		=	webserv
-HDRS		=	IServer.hpp	Server.hpp	SimpSocket.hpp	Utils.hpp	Request.hpp	\
-				Config.hpp	ConfigParams.hpp
-SRCS		=	main.cpp	Server.cpp	SimpSocket.cpp	Utils.cpp	Request.cpp	\
-				Config.cpp
+HDRS		=	IServer.hpp			Server.hpp			SimpSocket.hpp	\
+				Utils.hpp			ConfigParams.hpp	Config.hpp		\
+				Request.hpp			Response.hpp
+SRCS		=	main.cpp			SimpSocket.cpp		Utils.cpp		\
+				Config.cpp			Server.cpp			Request.cpp		\
+				Response.cpp
+
 
 SRC		=	$(addprefix ${FLDR_S},${SRCS})
 HDR		=	$(addprefix ${FLDR_H},${HDRS})
@@ -26,7 +29,7 @@ OBJS	=	${SRC:%.cpp=%.o}
 
 ${NAME}:	${OBJS}
 			@${CC} ${FLAGS1} ${FLAGS2} ${OBJS} -o ${NAME}
-			@${MAKE} clean
+#			@${MAKE} clean
 
 all:		${NAME}
 

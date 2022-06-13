@@ -99,7 +99,7 @@ bool	Config::is_params_valid()
 
 void	Config::parse()
 {
-	std::vector<std::string>	pairParamsRoutes = utils::split(readFile(), "\n\n");
+	std::vector<std::string>	pairParamsRoutes = utils::split(readConfig(), "\n\n");
 
 	if (pairParamsRoutes.empty() || pairParamsRoutes.size() % 2)
 		return;
@@ -230,9 +230,9 @@ void	Config::parseRoutes(std::string const &src)
 //	}
 }
 
-std::string	Config::readFile() const
+std::string	Config::readConfig() const
 {
-	std::ifstream	f("config/default.conf");
+	std::ifstream	f(_configFilePathFull);
 	std::string		data;
 	std::string		tmp;
 

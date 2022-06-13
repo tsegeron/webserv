@@ -26,6 +26,7 @@ namespace utils {
 	void						logging(std::string const &, int fd = 1);
 	std::string					&trim(std::string &, std::string const &chars=" ");
 	std::vector<std::string>	split(std::string src, std::string const &delimiter=" ");
+	std::string					&readFile(std::string const &filename);
 
 }
 

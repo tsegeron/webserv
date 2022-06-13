@@ -27,7 +27,7 @@ private:
 
 	static bool	exists(std::string const &filename);
 	static bool	is_config(std::string const &filename);
-	std::string	readFile() const;
+	std::string	readConfig() const;
 //	void
 	void		parseParams(std::string const &);
 	void		parseRoutes(std::string const &);

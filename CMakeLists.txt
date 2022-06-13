@@ -11,6 +11,7 @@ add_executable(zero_webserv
         srcs/Request.cpp
         srcs/Config.cpp
         srcs/Urls.cpp
+        srcs/Response.cpp
         hdrs/Utils.hpp
         hdrs/Server.hpp
         hdrs/SimpSocket.hpp
@@ -18,4 +19,5 @@ add_executable(zero_webserv
         hdrs/Request.hpp
         hdrs/Config.hpp
         hdrs/Urls.hpp
-        hdrs/ConfigParams.hpp)
+        hdrs/ConfigParams.hpp
+        hdrs/Response.hpp)

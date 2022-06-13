@@ -11,7 +11,7 @@ class IServer {
 private:
 	virtual void		accepter(struct sockaddr_in &, int &) = 0;
 	virtual void		handler(int) = 0;
-	virtual void		responder() = 0;
+	virtual void		responder(int) = 0;
 
 public:
 	virtual void		runServer() = 0;

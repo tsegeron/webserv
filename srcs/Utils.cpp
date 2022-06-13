@@ -55,12 +55,22 @@ namespace utils {
 		return splitted;
 	}
 
+	std::string	&readFile(std::string const &filename)
+	{
+		std::ifstream	f(filename);
+		std::string		data;
+		std::string		tmp;
+
+		if (f.is_open())
+			while (std::getline(f, tmp))
+				data += tmp;
+		f.close();
+
+		return utils::trim(data);
+	}
 }
 
 //int main()
 //{
-//	std::string	source = "Hello world she said to me eventually";
-//	std::vector<std::string>	splitted = utils::split(source);
-//	for (std::string const &i : splitted)
-//		std::cout << i << std::endl;
+//	std::cout << utils::readFile("") << std::endl;
 //}
