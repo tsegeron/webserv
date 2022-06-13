@@ -203,7 +203,7 @@ void	Config::parseRoutes(std::string const &src)
 		}
 		map["uri"] = tmp.at(0);
 		tmp = utils::split(tmp.at(1), "\n");
-		if (std::find(tmp.begin(), tmp.end(), "}") == std::end(tmp))
+		if (std::find(tmp.begin(), tmp.end(), "}") == tmp.end())
 		{
 			_error_msg = "Config error: expected closing curly braces '}' after location parameters";
 			return;
@@ -241,7 +241,7 @@ std::string	Config::readFile() const
 
 	f.close();
 
-	return data;
+	return utils::trim(data, "\n");
 }
 
 bool	Config::exists(std::string const &filename)
@@ -251,7 +251,7 @@ bool	Config::exists(std::string const &filename)
 
 bool	Config::is_config(std::string const &filename)
 {
-	struct stat	s;
+	struct stat	s{};
 
 	if (::lstat(filename.c_str(), &s) == 0 && !filename.empty()) // is it valid path?
 	{

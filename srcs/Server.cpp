@@ -1,25 +1,25 @@
 #include "../hdrs/Server.hpp"
 
-typedef typename std::vector<std::pair<std::string, int>>	HostsPortsPair;
 
 Server::Server(char **av)
 {
-	HostsPortsPair	hostsPortsPair;
+	Config				config(av);
+	std::vector<Params>	confParams;
 
 	utils::createLogFile();
-	_config		= new Config(av);
-	if (!_config->is_valid())
+	if (!config.is_valid())
 		throw ConfigException();
 
-	hostsPortsPair = _config->getHostsPortsPair();
-	for (u_int i = 0; i < hostsPortsPair.size(); ++i)
+	confParams = config.getParams();
+	for (u_int i = 0; i < confParams.size(); ++i)
 	{
-		_servSockets.push_back(new SimpSocket(hostsPortsPair[i].first, hostsPortsPair[i].second));
-		if (!_servSockets[i]->is_socket_valid() || !_servSockets[i]->allowMultipleConnectionsOnSocket() ||
-			!_servSockets[i]->bindSocketToLocalSockaddr() || !_servSockets[i]->listenForConnectionsOnSocket(BACKLOG))
+		_sockets.push_back(new SimpSocket(confParams[i].host, confParams[i].port));
+		SimpSocket	*tmp = *(--_sockets.end());
+		if (!tmp->is_socket_valid() || !tmp->allowMultipleConnectionsOnSocket() ||
+			!tmp->bindSocketToLocalSockaddr() || !tmp->listenForConnectionsOnSocket(BACKLOG))
 			throw SocketException();
-		_requests[_servSockets[i]->getServerFd()];
-		_fds.push_back(_servSockets[i]->getServerFd());
+		_requests[tmp->getServerFd()];
+		_fds.insert(std::pair<int, Params>(tmp->getServerFd(), confParams[i]));
 	}
 
 	_timeout.tv_sec = TIMEOUT;
@@ -27,8 +27,8 @@ Server::Server(char **av)
 	FD_ZERO(&_currentSockets);
 	FD_ZERO(&_readSockets);
 	FD_ZERO(&_writeSockets);
-	for (u_int i = 0; i < _servSockets.size(); ++i)
-		FD_SET(_servSockets[i]->getServerFd(), &_currentSockets);
+	for (u_int i = 0; i < _sockets.size(); ++i)
+		FD_SET(_sockets[i]->getServerFd(), &_currentSockets);
 }
 
 Server::Server(Server const &src)
@@ -38,7 +38,7 @@ Server::Server(Server const &src)
 
 Server &Server::operator = (const Server &src)
 {
-	this->_servSockets		= src._servSockets;
+	this->_sockets		= src._sockets;
 	this->_currentSockets	= src._currentSockets;
 	this->_readSockets		= src._readSockets;
 
@@ -47,27 +47,24 @@ Server &Server::operator = (const Server &src)
 
 Server::~Server()
 {
-	delete	_config;
-	_config	= nullptr;
-
-	for (u_int i = 0; i < _servSockets.size(); ++i)
+	for (u_int i = 0; i < _sockets.size(); ++i)
 	{
-		delete _servSockets[i];
-		_servSockets[i] = nullptr;
+		delete _sockets[i];
+		_sockets[i] = nullptr;
 	}
 	for (Requests::iterator it = _requests.begin(); it != _requests.end(); ++it)
 	{
 		delete it->second;
 		it->second = nullptr;
 	}
-	_servSockets.clear();
+	_sockets.clear();
 	_requests.clear();
 }
 
 void	Server::runServer()
 {
-	struct sockaddr_in	address	= _servSockets[0]->getAddress();
-	int					addrLen	= _servSockets[0]->getAddressLen();
+	struct sockaddr_in	address	= _sockets[0]->getAddress();
+	int					addrLen	= _sockets[0]->getAddressLen();
 
 	while (true)
 		accepter(address, addrLen);
@@ -96,11 +93,11 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 		utils::logging(strerror(errno));
 	else
 	{
-		for (int i = 0; i < FD_SETSIZE; i++)
+		for (int i = 0; i < FD_SETSIZE; ++i)
 		{
 			if (FD_ISSET(i, &_readSockets))
 			{
-				if (std::find(_fds.begin(), _fds.end(), i) != _fds.end())
+				if (_fds.find(i) != _fds.end())
 				{
 					socket = accept(i, (struct sockaddr *)&address, (socklen_t *)&addrLen);
 					FD_SET(socket, &_currentSockets);

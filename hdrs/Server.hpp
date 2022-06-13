@@ -17,10 +17,10 @@
 struct Server: IServer {
 	typedef typename std::vector<SimpSocket *>	Sockets;
 	typedef typename std::map<int, Request *>	Requests;
-	typedef typename std::vector<int>			Listen;
+	typedef typename std::map<int, Params>		Listen;
 private:
-	Sockets			_servSockets;
-	Config			*_config;
+	Sockets			_sockets;
+//	Config			*_config;
 	Requests		_requests;
 //	Urls			*_urls;
 	fd_set			_currentSockets, _readSockets, _writeSockets;
@@ -43,7 +43,7 @@ public:
 	Server &operator = (Server const &src);
 	virtual ~Server();
 
-	Sockets		getServSocket() const { return this->_servSockets; };
+	Sockets		getServSocket() const { return this->_sockets; };
 
 	void		runServer() final;
 

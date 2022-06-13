@@ -19,8 +19,10 @@ int main(int ac, char **av)
 
 	std::map<int, std::string>	tmp;
 
-	tmp[1];
-	std::cout << tmp[1] << std::endl;
+	tmp[1] = "11";
+	tmp[2] = "22";
+	tmp[3] = "33";
+	std::cout << (tmp.find(4) == tmp.end()) << std::endl;
 //	test.push_back(std::pair<std::string, int>("1", 1));
 //
 //	std::cout << test[0].first << std::endl;
