@@ -27,6 +27,8 @@ public:
 	std::string							getCookie() const { return _request.at("Cookie"); };
 	std::string							getAccept() const { return _request.at("Accept"); };
 	std::string							getBody() const { return _request.at("Body"); };
+	std::string							getHost() const { return utils::split(_request.at("Host"), ":")[0]; };
+	std::string							getPort() const { return utils::split(_request.at("Host"), ":")[1]; };
 };
 
 

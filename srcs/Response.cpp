@@ -24,15 +24,21 @@ std::map<int, std::string> Response::_createMap()
 }
 
 Response::Response(int fd, const Request *request)
-	: _socket(fd), _request(request)
+	: _socket(fd), _request(request), _statusCode(200)
 {
-	_header = _request->getRequest()["Protocol"] + " " +
+	_request->getRequest()["Host"]
+}
+
+std::string	Response::craftHeader(int contLength, std::string const &contType) const
+{
+	return	_request->getRequest()["Protocol"] + " " +
 			std::to_string(_statusCode) + " " +
-			_statusPhrase[_statusCode];
-
-
+			_statusPhrase.at(_statusCode) + "\r\n" +
+			"Content-Length: " + "88" + "\r\n" +
+			"Content-Type: text/html\r\n\r\n";
 }
 
 int main()
 {
+
 }

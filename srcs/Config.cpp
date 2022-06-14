@@ -128,9 +128,12 @@ void	Config::parse()
 			if (_params[i].root.empty())
 				_params[i].root = "root/";
 			if (_params[i].default_error_page.empty())
-				_params[i].root = "404.html";
+				_params[i].default_error_page = "404.html";
 			if (_params[i].error_pages.empty())
-				_params[i].root = "404.html";
+			{
+				_params[i].error_pages["404"] = "404.html";
+
+			}
 		}
 		if (_params[i].port == 0 || _params[i].server_name.empty() ||
 			_params[i].root.empty() || _params[i].locations.empty())

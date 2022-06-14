@@ -2,7 +2,7 @@
 2	821	1654971308000000000	CMakeFiles/zero_webserv.dir/srcs/Request.cpp.o	7e77ce5dbc264b09
 2	529	1654975471000000000	CMakeFiles/zero_webserv.dir/srcs/Urls.cpp.o	1bdb0a3a99a3aac5
 2	906	1654975471000000000	CMakeFiles/zero_webserv.dir/srcs/Config.cpp.o	9f84054d17091ae5
-0	180	1655133603000000000	build.ninja	18a978e8cbd91be5
+0	180	1655214893000000000	build.ninja	18a978e8cbd91be5
 2	516	1654976555000000000	CMakeFiles/zero_webserv.dir/srcs/main.cpp.o	80f50c9b23d5c4c5
 670	709	1654976555000000000	zero_webserv	5eb1dc75ef16bf0a
 2	670	1654976555000000000	CMakeFiles/zero_webserv.dir/srcs/Server.cpp.o	9995675a16b70d9c

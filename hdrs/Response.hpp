@@ -19,12 +19,12 @@ private:
 	const Request							*_request;
 
 public:
-		Response(int, Request const *);
+	Response(int, Request const *);
 	Response(Response const &other);
 	Response &operator = (Response const &other);
 	virtual ~Response();
 
-
+	std::string	craftHeader(int, std::string const &) const;
 
 };
 

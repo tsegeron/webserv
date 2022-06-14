@@ -131,8 +131,6 @@ void	print_fullRequest(std::map<std::string, std::string> const &request)
 void	print_shortRequest(Request const *request)
 {
 	std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
-//	for (const auto &elem : request)
-//		std::cout << elem.first << " : " << elem.second << std::endl;
 	std::cout	<< request->getMethod() << " "
 				<< request->getPath() << " "
 				<< request->getAccept() << std::endl
@@ -155,8 +153,9 @@ void	Server::handler(int clientSocket)
 	print_shortRequest(_requests[clientSocket]);
 	utils::logging(_requests[clientSocket]->getMethod() + " " + _requests[clientSocket]->getPath());
 
-	Response	response(clientSocket, _requests[clientSocket]);
-
+//	Response	response(_fds[clientSocket], _requests[clientSocket]);
+//
+//	send(clientSocket, response.getResponse(), response.getRespLength())
 
 	delete _requests[clientSocket];
 }

@@ -13,5 +13,9 @@
 
 int main(int ac, char **av)
 {
-	std::cout << utils::readFile("error_pages/404.html") << std::endl;
+	std::map<int, std::string> m = {
+			{1, "11"},
+			{2, "22"}
+	};
+	std::cout << m[1] << std::endl;
 }

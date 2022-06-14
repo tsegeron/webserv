@@ -10,7 +10,6 @@
 # include "Request.hpp"
 # include "Response.hpp"
 # include "Config.hpp"
-# include "Urls.hpp"
 
 # define TIMEOUT 1
 # define BACKLOG 100
@@ -21,11 +20,9 @@ struct Server {
 	typedef typename std::map<int, Params>		Listen;
 private:
 	Sockets			_sockets;
-//	Config			*_config;
 	Requests		_requests;
-//	Urls			*_urls;
-	fd_set			_currentSockets, _readSockets, _writeSockets;
 	Listen			_fds;
+	fd_set			_currentSockets, _readSockets, _writeSockets;
 	struct timeval	_timeout;
 
 	void		accepter(struct sockaddr_in &, int &);
@@ -40,7 +37,7 @@ public:
 
 	Sockets		getServSocket() const { return this->_sockets; };
 
-	void		runServer() final;
+	void		runServer();
 
 	struct	ConfigException: std::exception {
 		const char	*what() const throw() {

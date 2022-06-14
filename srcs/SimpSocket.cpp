@@ -14,7 +14,8 @@ SimpSocket::SimpSocket(std::string const &host, int port)
 	protocol				= 0;
 	interface				= INADDR_ANY;
 	address.sin_family		= domain;
-	address.sin_addr.s_addr	= htonl(interface);
+//	address.sin_addr.s_addr	= inet_addr(host.c_str());
+	address.sin_addr.s_addr	= inet_addr("127.0.0.1");
 	address.sin_port		= htons(port);
 	serverFd				= socket(domain, type, protocol);
 
