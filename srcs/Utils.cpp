@@ -55,7 +55,7 @@ namespace utils {
 		return splitted;
 	}
 
-	std::string	&readFile(std::string const &filename)
+	std::string	readFile(std::string const &filename)
 	{
 		std::ifstream	f(filename);
 		std::string		data;

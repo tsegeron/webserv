@@ -189,6 +189,7 @@ void	Config::parseRoutes(std::string const &src)
 	std::vector<std::string>			tmp;
 	std::vector<std::string>			valPair;
 	std::map<std::string, std::string>	map;
+	std::string							location;
 
 	if (routesList.empty())
 	{
@@ -204,7 +205,7 @@ void	Config::parseRoutes(std::string const &src)
 			_error_msg = "Config error: expected '{' after location";
 			return;
 		}
-		map["uri"] = tmp.at(0);
+		location = tmp.at(0);
 		tmp = utils::split(tmp.at(1), "\n");
 		if (std::find(tmp.begin(), tmp.end(), "}") == tmp.end())
 		{
@@ -222,7 +223,7 @@ void	Config::parseRoutes(std::string const &src)
 			}
 			map[valPair.at(0)] = valPair.at(1);
 		}
-		_tmp.locations.push_back(map);
+		_tmp.locations[location] = map;
 		map.clear();
 	}
 //	for (auto &elem : params.locations)

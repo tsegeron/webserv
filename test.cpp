@@ -11,11 +11,14 @@
 #include "hdrs/Utils.hpp"
 
 
+
+
 int main(int ac, char **av)
 {
-	std::map<int, std::string> m = {
-			{1, "11"},
-			{2, "22"}
-	};
-	std::cout << m[1] << std::endl;
+	int i;
+
+	if ((std::string a("qwe")) == "qwe")
+		std::cout << a << std::endl;
+	std::cout << 1 << std::endl;
+
 }

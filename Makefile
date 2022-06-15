@@ -12,10 +12,10 @@ FLDR_H	=	hdrs/
 NAME		=	webserv
 HDRS		=	IServer.hpp			Server.hpp			SimpSocket.hpp	\
 				Utils.hpp			ConfigParams.hpp	Config.hpp		\
-				Request.hpp
+				Request.hpp			Response.hpp
 SRCS		=	main.cpp			SimpSocket.cpp		Utils.cpp		\
-				Config.cpp			Server.cpp			Request.cpp
-#				Response.cpp
+				Config.cpp			Server.cpp			Request.cpp		\
+				Response.cpp
 
 
 SRC		=	$(addprefix ${FLDR_S},${SRCS})

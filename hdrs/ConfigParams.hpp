@@ -9,8 +9,8 @@
 # include <map>
 
 struct Params {
-	typedef std::map<std::string, std::string>				strPairMap;
-	typedef std::vector<std::map<std::string, std::string>> ElonMask;
+	typedef std::map<std::string, std::string>							strPairMap;
+	typedef std::map<std::string, std::map<std::string, std::string> >	ElonMask;
 	std::string	host;
 	std::string	server_name;
 	std::string	error_pages_dir;

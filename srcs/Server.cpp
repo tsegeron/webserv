@@ -148,14 +148,23 @@ void	Server::handler(int clientSocket)
 
 	_requests[clientSocket] = new Request(std::string(buffer));
 	_requests[clientSocket]->parseRequest();
-//	print_rawRequest(std::string(buffer));
-//	print_fullRequest(_requests[clientSocket]->getRequest());
-	print_shortRequest(_requests[clientSocket]);
 	utils::logging(_requests[clientSocket]->getMethod() + " " + _requests[clientSocket]->getPath());
+//	print_rawRequest(std::string(buffer));
+	print_fullRequest(_requests[clientSocket]->getRequest());
+//	print_shortRequest(_requests[clientSocket]);
 
-//	Response	response(_fds[clientSocket], _requests[clientSocket]);
-//
-//	send(clientSocket, response.getResponse(), response.getRespLength())
+
+	int			i		= 0;
+	std::string	host	= _requests[clientSocket]->getHost();
+	std::string	port	= _requests[clientSocket]->getPort();
+	for (; i < _fds.size(); ++i)
+		if (_fds[i].host == host && std::to_string(_fds[i].port) == port)
+			break ;
+	Response	response(_fds[i], _requests[clientSocket]);
+	response.process();
+//	std::cout << response.getResponse() << std::endl;
+	send(clientSocket, response.getResponse().c_str(), response.getRespLength(), 0);
+
 
 	delete _requests[clientSocket];
 }

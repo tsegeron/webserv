@@ -6,25 +6,34 @@
 # define ZERO_WEBSERV_RESPONSE_HPP
 
 # include "Request.hpp"
-# include "Utils.hpp"
+# include "Config.hpp"
 
 class Response {
-private:
 	static std::map<int, std::string>		_createMap();
 	static const std::map<int, std::string> _statusPhrase;
 
-	std::string								_header;
-	int										_statusCode;
-	int										_socket;
-	const Request							*_request;
+private:
+	std::string		_response;
+	std::string		_header;
+	int				_statusCode;
+	const Params	_config;
+	const Request	*_request;
+
+	std::string		_username;
+
+	bool		is_valid();
 
 public:
-	Response(int, Request const *);
-	Response(Response const &other);
-	Response &operator = (Response const &other);
-	virtual ~Response();
+	Response(Params const &, Request const *);
+//	Response(Response const &other);
+//	Response &operator = (Response const &other);
+//	virtual ~Response();
 
-	std::string	craftHeader(int, std::string const &) const;
+	std::string	getResponse() const { return craftHeader() + _response; };
+	size_t		getRespLength() const { return _response.size() + 1; };
+
+	std::string	craftHeader() const;
+	void		process();
 
 };
 
