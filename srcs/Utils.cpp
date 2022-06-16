@@ -15,20 +15,22 @@ namespace utils {
 		char        	timestamp[23];
 
 		timestamp[22] = '\0';
-		tm = gmtime(&t);
+		tm = ::gmtime(&t);
 		tm->tm_hour += 3;
-		strftime(timestamp, sizeof(timestamp), "[%Y-%m-%d %H:%M:%S]\t", tm);
+		::strftime(timestamp, sizeof(timestamp), "[%Y-%m-%d %H:%M:%S]\t", tm);
 
 		logFile << timestamp + msg << std::endl;
 		logFile.close();
 
 		if (fd == 1)
+			std::cout << BLUE << timestamp << RESET << CYAN << msg << RESET << std::endl;
+		else if (fd == 3)
 			std::cout << BLUE << timestamp << RESET << GREEN << msg << RESET << std::endl;
 		else
 			std::cerr << BLUE << timestamp << RESET << RED << msg << RESET << std::endl;
 	}
 
-	std::string	&trim(std::string &src, std::string const &chars)
+	std::string	trim(std::string src, std::string const &chars)
 	{
 		src.erase(src.find_last_not_of(chars) + 1);
 		src.erase(0, src.find_first_not_of(chars));
@@ -63,7 +65,7 @@ namespace utils {
 
 		if (f.is_open())
 			while (std::getline(f, tmp))
-				data += tmp;
+				data += utils::trim(tmp);
 		f.close();
 
 		return utils::trim(data);

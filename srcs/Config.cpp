@@ -63,7 +63,7 @@ bool	Config::is_valid()
 			utils::logging(_error_msg, 2);
 			return false;
 		}
-		utils::logging("Applying config " + _configFilePathShort);
+		utils::logging("Applying config " + _configFilePathShort, 3);
 		return true;
 	}
 	utils::logging("Aborted. No config file was provided, neither default nor custom.", 2);

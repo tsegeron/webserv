@@ -15,10 +15,7 @@
 
 int main(int ac, char **av)
 {
-	int i;
-
-	if ((std::string a("qwe")) == "qwe")
-		std::cout << a << std::endl;
-	std::cout << 1 << std::endl;
-
+//	std::string tmp = utils::readFile("../bootstrap5/js/bootstrap.js/bootstrap.min.js");
+	std::string tmp = utils::readFile("error_pages/501.html");
+	std::cout << tmp.c_str() << std::endl;
 }

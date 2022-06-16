@@ -9,6 +9,7 @@
 # include <iostream>
 # include <fstream>
 # include <vector>
+# include <algorithm>
 
 # define RESET   "\033[0m"
 # define BLACK   "\033[30m"
@@ -24,9 +25,9 @@ namespace utils {
 
 	void						createLogFile();
 	void						logging(std::string const &, int fd = 1);
-	std::string					&trim(std::string &, std::string const &chars=" ");
-	std::vector<std::string>	split(std::string src, std::string const &delimiter=" ");
-	std::string					readFile(std::string const &filename);
+	std::string					trim(std::string, std::string const &chars=" ");
+	std::vector<std::string>	split(std::string, std::string const &delimiter=" ");
+	std::string					readFile(std::string const &);
 
 }
 

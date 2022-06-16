@@ -13,7 +13,7 @@ Request & Request::operator = (Request const &src)
 
 Request::~Request()
 {
-
+	_request.clear();
 }
 
 void	Request::parseRequest()

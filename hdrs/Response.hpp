@@ -11,17 +11,23 @@
 class Response {
 	static std::map<int, std::string>		_createMap();
 	static const std::map<int, std::string> _statusPhrase;
+//	static const std::string				_favicon;
 
 private:
-	std::string		_response;
+	std::string		_body;
 	std::string		_header;
+	std::string		_response;
 	int				_statusCode;
 	const Params	_config;
 	const Request	*_request;
 
 	std::string		_username;
 
+	bool		is_autoindex();
+	bool		is_redirect();
 	bool		is_valid();
+	void		craftHeader();
+	void		craftResponse();
 
 public:
 	Response(Params const &, Request const *);
@@ -29,10 +35,9 @@ public:
 //	Response &operator = (Response const &other);
 //	virtual ~Response();
 
-	std::string	getResponse() const { return craftHeader() + _response; };
+	std::string	getResponse() const { return _response; };
 	size_t		getRespLength() const { return _response.size() + 1; };
 
-	std::string	craftHeader() const;
 	void		process();
 
 };

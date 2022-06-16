@@ -52,11 +52,6 @@ Server::~Server()
 		delete _sockets[i];
 		_sockets[i] = nullptr;
 	}
-	for (Requests::iterator it = _requests.begin(); it != _requests.end(); ++it)
-	{
-		delete it->second;
-		it->second = nullptr;
-	}
 	_sockets.clear();
 	_requests.clear();
 }
@@ -90,7 +85,7 @@ void	Server::accepter(struct sockaddr_in &address, int &addrLen)
 	}
 	std::cout << "\33[2K\r";
 	if (selectStat == -1)
-		utils::logging(strerror(errno));
+		utils::logging(strerror(errno), 2);
 	else
 	{
 		for (int i = 0; i < FD_SETSIZE; ++i)
@@ -148,9 +143,9 @@ void	Server::handler(int clientSocket)
 
 	_requests[clientSocket] = new Request(std::string(buffer));
 	_requests[clientSocket]->parseRequest();
-	utils::logging(_requests[clientSocket]->getMethod() + " " + _requests[clientSocket]->getPath());
+//	utils::logging(_requests[clientSocket]->getMethod() + " " + _requests[clientSocket]->getPath());
 //	print_rawRequest(std::string(buffer));
-	print_fullRequest(_requests[clientSocket]->getRequest());
+//	print_fullRequest(_requests[clientSocket]->getRequest());
 //	print_shortRequest(_requests[clientSocket]);
 
 
@@ -163,8 +158,15 @@ void	Server::handler(int clientSocket)
 	Response	response(_fds[i], _requests[clientSocket]);
 	response.process();
 //	std::cout << response.getResponse() << std::endl;
+//	std::cout << response.getRespLength() << std::endl;
 	send(clientSocket, response.getResponse().c_str(), response.getRespLength(), 0);
-
+//	std::string data = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title>405 Method Not Allowed</title></head><body><div class=\"d-flex bg-secondary align-items-center justify-content-center vh-100\"><div class=\"text-center text-light\"><h1 class=\"display-1 fw-bold\">405</h1><p class=\"lead text-white-50 fs-2\">Method Not Allowed</p><p class=\"text-white-50 fs-5\">Method Not Allowed.</p><a class=\"btn btn-outline-dark\" href=\"/\" role=\"button\">Home</a></div></div></body></html>";
+//	std::string tmp = "HTTP/1.1 405 Method Not Allowed\r\n"
+//					  "Server: webserv\r\n"
+//					  "Content-Length: " + std::to_string(data.size()) + "\r\n"
+//					  "Connection: Closed\r\n"
+//					  "Content-Type: text/html\r\n\r\n";
+//	send(clientSocket, (tmp + data).c_str(), (tmp + data).size() + 1, 0);
 
 	delete _requests[clientSocket];
 }
