@@ -25,9 +25,12 @@ private:
 
 	bool		is_autoindex();
 	bool		is_redirect();
+	bool		is_cgi();
 	bool		is_valid();
 	void		craftHeader();
 	void		craftResponse();
+	std::string	getCgiResponse(const std::string &scriptName, std::string const &filename = "") const;
+	char		**getCgiEnv(std::string const &scriptName, std::string const &filename = "") const;
 
 public:
 	Response(Params const &, Request const *);

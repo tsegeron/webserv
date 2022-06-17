@@ -13,9 +13,11 @@
 
 
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **env)
 {
-//	std::string tmp = utils::readFile("../bootstrap5/js/bootstrap.js/bootstrap.min.js");
-	std::string tmp = utils::readFile("error_pages/501.html");
-	std::cout << tmp.c_str() << std::endl;
+	int len = -1;
+	while(env[++len]);
+
+	for (int i = 0; i < len; ++i)
+		std::cout << env[i] << std::endl;
 }

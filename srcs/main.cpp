@@ -1,6 +1,6 @@
 #include "../hdrs/Server.hpp"
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **envp)
 {
 //	Config	config(av);
 //

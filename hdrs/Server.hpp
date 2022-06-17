@@ -19,6 +19,7 @@ struct Server {
 	typedef typename std::map<int, Request *>	Requests;
 	typedef typename std::map<int, Params>		Listen;
 private:
+	char			**envp;
 	Sockets			_sockets;
 	Requests		_requests;
 	Listen			_fds;

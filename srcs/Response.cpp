@@ -36,48 +36,130 @@ void	Response::process()
 	std::string	path = _request->getPath();
 
 	if (path.find("bootstrap") != std::string::npos)
+	{
 		_body = utils::readFile(utils::trim(path, "./"));
+		craftResponse();
+	}
 //	else if (path.find("favicon") != std::string::npos)
 //		_body = utils::readFile("");
 	else if (is_autoindex())
 	{
-//		execute cgi for autoindex
+		_statusCode = 200;
+		_response = getCgiResponse(_config.locations.at(_request->getPath()).at("cgi"),
+								   utils::trim(_request->getPath(), "/"));
 	}
 	else if (is_redirect())
+		craftResponse();
+	else if (is_cgi())
 	{
-
+		_statusCode = 200;
+		_response = getCgiResponse(_request->getPath());
 	}
 	else if (!is_valid())
 	{
 		_body = utils::readFile(_config.root + _config.error_pages_dir + std::to_string(_statusCode) + ".html");
 		if (_body.empty())
 			_body = utils::readFile("error_pages/" + std::to_string(_statusCode) + ".html");
+		craftResponse();
+	}
+	utils::logging(	_request->getMethod()				+ " " +
+					_request->getPath()					+ " " +
+					std::to_string(_statusCode)		+ " " +
+					_statusPhrase.at(_statusCode)	+ " " +
+					std::to_string(_body.size()));
+
+}
+
+
+std::string	Response::getCgiResponse(std::string const &path, std::string const &filename) const
+{
+	int		pid;
+	int		fd[2];
+	char	buf[10000];
+	char	**tmp_env;
+	char	**tmp;
+
+//	tmp = (char **)malloc(sizeof(char *) * 2);
+//	tmp[0] = ::strdup(scriptName.c_str());
+//	tmp[1] = nullptr;
+
+	bzero(&buf, 10000);
+	tmp_env = getCgiEnv(path, filename);
+	pipe(fd);
+	pid = fork();
+	if (!pid)
+	{
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[1]);
+		close(fd[0]);
+		if (execve(("./cgi-bin/" + _config.locations.at(utils::split(path, "?").at(0)).at("cgi")).c_str(), nullptr, tmp_env) <= 0)
+			exit(3);
 	}
 	else
 	{
-		_body = "<!DOCTYPE html>\n"
-				"<html lang=\"en\">\n"
-				"<head>\n"
-				"<title>Home</title>\n"
-				"</head>\n"
-				"<body>\n"
-				" <p>Hello</p>\n"
-				"</body>\n"
-				"</html>";
+		close(fd[1]);
+		int status;
+		waitpid(-1, &status, 0);
+		read(fd[0], &buf, 10000);
+		close(fd[0]);
+		delete tmp_env;
 	}
-	craftResponse();
+	return buf;
+}
 
-	utils::logging(	_request->getMethod() + " " +
-					_request->getPath() + " " +
-					std::to_string(_statusCode) + " " +
-					_statusPhrase.at(_statusCode) + " " +
-					std::to_string(_body.size()));
+char	**Response::getCgiEnv(std::string const &path, std::string const &filename) const
+{
+	char						**env;
+//	char						*tmp = std::getenv("PATH");
+	std::vector<std::string>	envp_vec;
+	std::vector<std::string>	tmp = utils::split(path, "?");
+	std::string login("Vagiz");
+
+//	for (int i = 0; envp[i]; i++)
+//		envp_vec.push_back(static_cast<std::string>(envp[i]));
+	envp_vec.push_back("PATH=" + std::string(std::getenv("PATH")));
+//	envp_vec.push_back(std::string("SHELL"));
+//	envp_vec.push_back(std::string("ZSH"));
+//	free(tmp);
+	envp_vec.push_back("CONTENT_TYPE=" + _request->getAccept());
+//	envp_vec.push_back("CONTENT_LENGTH=" + std::to_string(favicon.size()));
+	envp_vec.push_back("CONTENT_LENGTH=" + std::to_string(1000));
+	envp_vec.push_back("HTTP_USER_AGENT=" + _request->getRequest().at("User-Agent"));
+	if (tmp.size() < 2)
+		envp_vec.push_back("QUERY_STRING=");
+	else
+		envp_vec.push_back("QUERY_STRING=" + tmp.at(1));
+//	envp_vec.push_back("REMOTE_ADDR=" + _request.get());
+	envp_vec.push_back("REMOTE_HOST=" + _request->getHost());
+	envp_vec.push_back("REQUEST_METHOD=" + _request->getMethod());
+	envp_vec.push_back("SCRIPT_FILENAME=cgi-bin");
+	envp_vec.push_back("SCRIPT_NAME=" + _config.locations.at(tmp.at(0)).at("cgi"));
+	envp_vec.push_back("SERVER_NAME=" + _config.server_name);
+	envp_vec.push_back("FILENAME=" + filename);
+	envp_vec.push_back("COOKIE=" + _request->getCookie());
+	envp_vec.push_back("LOGIN=" + login);
+	env = new char *[envp_vec.size() + 1];
+	for (int i = 0; i < envp_vec.size(); i++)
+		env[i] = strdup(envp_vec[i].c_str());
+	env[envp_vec.size()] = nullptr;
+	return env;
+}
+
+
+bool	Response::is_cgi()
+{
+	try {
+		if (!_config.locations.at(utils::split(_request->getPath(), "?").at(0)).at("cgi").empty())
+			return true;
+		return false;
+	}
+	catch (...) {
+		return false;
+	}
 }
 
 bool	Response::is_redirect()
 {
-	std::string	location;
-
 	try {
 		if (!_config.locations.at(_request->getPath()).at("redirect").empty())
 			return _statusCode = 301;
@@ -91,10 +173,21 @@ bool	Response::is_redirect()
 bool	Response::is_autoindex()
 {
 	try {
-		if (_config.locations.at(_request->getPath()).at("autoindex") == "on")
-			return true;
-		else
-			return false;
+		std::vector<std::string>	tmp = utils::split(_request->getPath(), "/");
+		std::string					str;
+
+		for (u_int i = 0; i < tmp.size(); ++i)
+		{
+			try {
+				str += "/" + tmp[i];
+				if (_config.locations.at(str).at("autoindex") == "on")
+					return true;
+			}
+			catch (...) {
+				str += "/" + tmp[i];
+			}
+		}
+		return false;
 	}
 	catch (...) {
 		return false;

@@ -148,7 +148,6 @@ void	Server::handler(int clientSocket)
 //	print_fullRequest(_requests[clientSocket]->getRequest());
 //	print_shortRequest(_requests[clientSocket]);
 
-
 	int			i		= 0;
 	std::string	host	= _requests[clientSocket]->getHost();
 	std::string	port	= _requests[clientSocket]->getPort();
@@ -159,15 +158,10 @@ void	Server::handler(int clientSocket)
 	response.process();
 //	std::cout << response.getResponse() << std::endl;
 //	std::cout << response.getRespLength() << std::endl;
-	send(clientSocket, response.getResponse().c_str(), response.getRespLength(), 0);
-//	std::string data = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title>405 Method Not Allowed</title></head><body><div class=\"d-flex bg-secondary align-items-center justify-content-center vh-100\"><div class=\"text-center text-light\"><h1 class=\"display-1 fw-bold\">405</h1><p class=\"lead text-white-50 fs-2\">Method Not Allowed</p><p class=\"text-white-50 fs-5\">Method Not Allowed.</p><a class=\"btn btn-outline-dark\" href=\"/\" role=\"button\">Home</a></div></div></body></html>";
-//	std::string tmp = "HTTP/1.1 405 Method Not Allowed\r\n"
-//					  "Server: webserv\r\n"
-//					  "Content-Length: " + std::to_string(data.size()) + "\r\n"
-//					  "Connection: Closed\r\n"
-//					  "Content-Type: text/html\r\n\r\n";
-//	send(clientSocket, (tmp + data).c_str(), (tmp + data).size() + 1, 0);
 
+	send(clientSocket, response.getResponse().c_str(), response.getRespLength(), 0);
+
+	close(clientSocket);
 	delete _requests[clientSocket];
 }
 
