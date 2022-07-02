@@ -2,8 +2,7 @@
 // Created by Grubbly Ernesto on 6/13/22.
 //
 
-#ifndef ZERO_WEBSERV_RESPONSE_HPP
-# define ZERO_WEBSERV_RESPONSE_HPP
+#pragma once
 
 # include "Request.hpp"
 # include "Config.hpp"
@@ -13,17 +12,29 @@ class Response {
 	static const std::map<int, std::string> _statusPhrase;
 //	static const std::string				_favicon;
 
+public:
+	enum	Action {
+		invalid = 1,
+		bootstrap,
+		autoindexation,
+		redirection,
+		cgi,
+		other
+	};
+
 private:
 	std::string		_body;
 	std::string		_header;
-	std::string		_response;
 	int				_statusCode;
-	const Params	_config;
-	const Request	*_request;
+	Params			_config;
+	Request			*_request;
+
+	std::string		_response;
 
 	std::string		_username;
 
-	bool		is_autoindex();
+	int			action_to_do(std::string &, int *);
+	std::string	is_autoindex();
 	bool		is_redirect();
 	bool		is_cgi();
 	bool		is_valid();
@@ -33,17 +44,16 @@ private:
 	char		**getCgiEnv(std::string const &scriptName, std::string const &filename = "") const;
 
 public:
-	Response(Params const &, Request const *);
+	Response(Params &, Request *);
 //	Response(Response const &other);
 //	Response &operator = (Response const &other);
 //	virtual ~Response();
 
-	std::string	getResponse() const { return _response; };
-	size_t		getRespLength() const { return _response.size() + 1; };
+	std::string	getResponse()		const { return _response; };
+	size_t		getRespLength()		const { return _response.size() + 1; };
+	size_t		getHeaderLength()	const { return _header.size(); };
+	size_t		getBodyLength()		const { return _header.size(); };
 
-	void		process();
+	int			process();
 
 };
-
-
-#endif //ZERO_WEBSERV_RESPONSE_HPP

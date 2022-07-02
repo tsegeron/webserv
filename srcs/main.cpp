@@ -1,16 +1,11 @@
 #include "../hdrs/Server.hpp"
 
-int main(int ac, char **av, char **envp)
+int main(int ac, char **av)
 {
-//	Config	config(av);
-//
-//	utils::createLogFile();
-//	if (!config.is_valid())
-//		return 1;
+	(void) ac;
 	try
 	{
 		Server testServer(av);
-
 		testServer.runServer();
 	}
 	catch (std::exception &ex)

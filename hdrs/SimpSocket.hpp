@@ -6,14 +6,6 @@
 # define SIMPSOCKET_HPP
 
 # include "Utils.hpp"
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <exception>
-# include <cstring>
-# include <unistd.h>
-# include <map>
-
 
 class SimpSocket {
 private:
@@ -35,16 +27,27 @@ public:
 	SimpSocket & operator = (SimpSocket const &);
 	virtual ~SimpSocket();
 
-	bool	is_socket_valid();
+	bool	setSocketAsNonblock();
 	bool	allowMultipleConnectionsOnSocket();
 	bool	bindSocketToLocalSockaddr();
-	bool	initiateConnectionOnSocket();
-	bool	listenForConnectionsOnSocket(int backlog);
+	bool	initiateConnectionOnSocket(); // for client
+	bool	listenForConnectionsOnSocket();
 
+	std::string					getIP() const { return host + ":" + std::to_string(port); };
 	int							getServerFd() const { return serverFd; };
 	struct sockaddr_in			getAddress() const { return address; };
 	int							getAddressLen() const { return addrLen; };
 
+	struct	InetAddrException: std::exception {
+		const char	*what() const throw() {
+			return "Socket: bad host format";
+		}
+	};
+	struct	SocketException: std::exception {
+		const char	*what() const throw() {
+			return "Socket: error in 'socketFd' function";
+		}
+	};
 };
 
 #endif //SIMPSOCKET_HPP

@@ -2,20 +2,16 @@
 // Created by Grubbly Ernesto on 6/8/22.
 //
 
-#ifndef ZERO_WEBSERV_CONFIG_HPP
-# define ZERO_WEBSERV_CONFIG_HPP
+#pragma once
 
 # include "Utils.hpp"
 # include "ConfigParams.hpp"
-# include <unistd.h>
-# include <sys/stat.h>
-# include <map>
 
 # define CONF_DIR "config/"
 
 class Config {
-	typedef typename std::map<std::string, std::string>			strPairMap;
-	typedef typename std::vector<std::pair<std::string, int>>	HostsPortsPair;
+	typedef std::map<std::string, std::string>			strPairMap;
+	typedef std::vector<std::pair<std::string, int> >	HostsPortsPair;
 
 private:
 	std::string			_configFilePathShort;
@@ -31,6 +27,7 @@ private:
 //	void
 	void		parseParams(std::string const &);
 	void		parseRoutes(std::string const &);
+	bool		is_location_valid(std::map<std::string, std::string>);
 	bool		is_params_valid();
 	void		parse();
 
@@ -47,6 +44,3 @@ public:
 	std::string			getErrorMsg() const { return _error_msg; };
 	HostsPortsPair		getHostsPortsPair() const {  return _hostsPorts; };
 };
-
-
-#endif //ZERO_WEBSERV_CONFIG_HPP

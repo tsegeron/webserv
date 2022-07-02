@@ -27,6 +27,12 @@ Config::Config(char **av)
 			else
 				_configFilePathFull = "config/default.conf";
 		}
+		else
+		{
+			_configFilePathFull		= rawPath;
+			_configFilePathShort	= rawPath.find_last_of('/') != std::string::npos ?
+					rawPath.substr(rawPath.find_last_of('/') + 1) : rawPath;
+		}
 	}
 }
 
@@ -72,7 +78,7 @@ bool	Config::is_valid()
 
 bool	Config::is_params_valid()
 {
-	std::map<std::string, std::vector<int>>	portsDuplicateCheck;
+	std::map<std::string, std::vector<int> >	portsDuplicateCheck;
 
 	if (!_error_msg.empty())
 		return false;
@@ -106,7 +112,11 @@ void	Config::parse()
 	for (size_t i = 0; i < pairParamsRoutes.size(); i += 2)
 	{
 		parseParams(pairParamsRoutes.at(i));
+		if (!_error_msg.empty())
+			break;
 		parseRoutes(utils::trim(pairParamsRoutes.at(i + 1), "\n"));
+		if (!_error_msg.empty())
+			break;
 		if (!_tmp.empty())
 			_params.push_back(_tmp);
 		_tmp.clear();
@@ -126,14 +136,9 @@ void	Config::parse()
 			if (_params[i].body_size_limit == 0)
 				_params[i].body_size_limit = 60000;
 			if (_params[i].root.empty())
-				_params[i].root = "root/";
-			if (_params[i].default_error_page.empty())
-				_params[i].default_error_page = "404.html";
-			if (_params[i].error_pages.empty())
-			{
-				_params[i].error_pages["404"] = "404.html";
-
-			}
+				_params[i].root = "./";
+//			if (_params[i].error_pages.empty())
+//				_params[i].error_pages["404"] = "404.html";
 		}
 		if (_params[i].port == 0 || _params[i].server_name.empty() ||
 			_params[i].root.empty() || _params[i].locations.empty())
@@ -154,25 +159,19 @@ void	Config::parseParams(std::string const &src)
 	for (size_t i = 0; i < paramsList.size(); ++i)
 	{
 		paramsPair = utils::split(paramsList[i], ": ");
-		if (paramsPair.empty())
+		if (paramsPair.empty() || paramsPair.size() != 2)
 		{
 			_error_msg = "Wrong config file structure";
 			return;
 		}
-		if (paramsPair.size() > 1)
-			tmpParams[paramsPair.at(0)] = paramsPair.at(1);
+		tmpParams[paramsPair.at(0)] = paramsPair.at(1);
 	}
 	_tmp.host					= tmpParams["Host"];
-	if (tmpParams["Port"].empty())
-		tmpParams["Port"] = "0";
 	_tmp.port					= int(::strtol(tmpParams["Port"].c_str(), nullptr, 10));
 	_tmp.server_name			= tmpParams["Server_name"];
 	_tmp.error_pages_dir		= tmpParams["Error_pages_dir"];
-	if (tmpParams["Body_size_limit"].empty())
-		tmpParams["Body_size_limit"] = "60000";
 	_tmp.body_size_limit		= ::strtol(tmpParams["Body_size_limit"].c_str(), nullptr, 10);
 	_tmp.root					= tmpParams["Root"];
-	_tmp.default_error_page	= tmpParams["Default_error_page"];
 
 	std::vector<std::string>	tmp(utils::split(tmpParams["Error_pages"]));
 	for (size_t i = 0; i < tmp.size(); ++i)
@@ -216,12 +215,18 @@ void	Config::parseRoutes(std::string const &src)
 		for (size_t j = 0; j < tmp.size(); ++j)
 		{
 			valPair = utils::split(utils::trim(tmp.at(j)), ": ");
-			if (valPair.size() < 2)
+			if (valPair.size() != 2)
 			{
 				_error_msg = "[Config] Parse error: error near " + valPair.at(0);
 				return;
 			}
 			map[valPair.at(0)] = valPair.at(1);
+		}
+		if (!is_location_valid(map))
+		{
+			_error_msg = "Config error: error near " + _tmp.host + ":" + std::to_string(_tmp.port) + " location '" + location +
+					"'. Location is expected to have 'page', 'cgi', 'redirect', 'autoindex' or 'root' parameter";
+			return;
 		}
 		_tmp.locations[location] = map;
 		map.clear();
@@ -255,7 +260,7 @@ bool	Config::exists(std::string const &filename)
 
 bool	Config::is_config(std::string const &filename)
 {
-	struct stat	s{};
+	struct stat	s;
 
 	if (::lstat(filename.c_str(), &s) == 0 && !filename.empty()) // is it valid path?
 	{
@@ -269,4 +274,13 @@ bool	Config::is_config(std::string const &filename)
 		}
 	}
 	return false;
+}
+
+bool	Config::is_location_valid(std::map<std::string, std::string> uri_params)
+{
+	if (uri_params["page"].empty() && uri_params["cgi"].empty() &&
+		uri_params["redirect"].empty() && uri_params["autoindex"].empty() &&
+		uri_params["root"].empty())
+		return false;
+	return true;
 }

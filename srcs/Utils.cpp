@@ -1,4 +1,5 @@
 #include "../hdrs/Utils.hpp"
+#include "../hdrs/Request.hpp"
 
 namespace utils {
 
@@ -22,12 +23,19 @@ namespace utils {
 		logFile << timestamp + msg << std::endl;
 		logFile.close();
 
-		if (fd == 1)
-			std::cout << BLUE << timestamp << RESET << CYAN << msg << RESET << std::endl;
-		else if (fd == 3)
-			std::cout << BLUE << timestamp << RESET << GREEN << msg << RESET << std::endl;
-		else
-			std::cerr << BLUE << timestamp << RESET << RED << msg << RESET << std::endl;
+		switch (fd) {
+			case serverInfo:
+				std::cout << BLUE << timestamp << RESET << GREEN << msg << RESET << std::endl;
+				break;
+			case error:
+				std::cerr << BLUE << timestamp << RESET << RED << msg << RESET << std::endl;
+				break;
+			case connectionInfo:
+				std::cout << BLUE << timestamp << RESET << CYAN << msg << RESET << std::endl;
+				break;
+			default:
+				std::cout << msg << std::endl;
+		}
 	}
 
 	std::string	trim(std::string src, std::string const &chars)
@@ -51,7 +59,7 @@ namespace utils {
 				splitted.push_back(tmp);
 			src.erase(0, pos + delimiter.size());
 		}
-		if (!src.empty())
+		if (!src.empty() || splitted.empty())
 			splitted.push_back(src);
 
 		return splitted;
@@ -70,9 +78,37 @@ namespace utils {
 
 		return utils::trim(data);
 	}
-}
 
-//int main()
-//{
-//	std::cout << utils::readFile("") << std::endl;
-//}
+	void	print_rawRequest(std::string const &request)
+	{
+		std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+		std::cout << request << std::endl;
+		std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+	}
+
+	void	print_fullRequest(std::map<std::string, std::string> const &request)
+	{
+		std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+		for (std::map<std::string, std::string>::const_iterator it = request.cbegin(); it != request.end(); ++it)
+			std::cout << it->first << " : " << it->second << std::endl;
+		std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+	}
+
+	void	print_shortRequest(Request const *request)
+	{
+		std::cout << MAGENTA << "---------Reading request---------" << RESET << std::endl;
+		std::cout	<< request->getMethod() << " "
+					 << request->getPath() << " "
+					 << request->getAccept() << std::endl
+					 << "Body: " << request->getBody() << std::endl;
+//				<< request->getCookie() << std::endl;
+		std::cout << MAGENTA << "---------------------------------" << RESET << std::endl;
+	}
+
+	std::string	to_lower(std::string src)
+	{
+		for (u_long i = 0; i < src.size(); ++i)
+			src[i] = (char)tolower(src[i]);
+		return src;
+	}
+}

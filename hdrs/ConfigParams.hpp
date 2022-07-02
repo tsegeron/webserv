@@ -6,20 +6,19 @@
 # define ZERO_WEBSERV_CONFIGPARAMS_HPP
 
 # include "Utils.hpp"
-# include <map>
 
 struct Params {
 	typedef std::map<std::string, std::string>							strPairMap;
-	typedef std::map<std::string, std::map<std::string, std::string> >	ElonMask;
-	std::string	host;
-	std::string	server_name;
-	std::string	error_pages_dir;
-	std::string	root;
-	std::string	default_error_page;
-	strPairMap	error_pages;
-	int			port;
-	size_t		body_size_limit;
-	ElonMask	locations;
+	typedef std::map<std::string, std::map<std::string, std::string> >	strMapPairMap;
+	std::string		host;
+	std::string		server_name;
+	std::string		error_pages_dir;
+	std::string		root;
+	std::string		default_error_page;
+	strPairMap		error_pages;
+	int				port;
+	size_t			body_size_limit;
+	strMapPairMap	locations;
 
 	Params & operator = (Params const &other) {
 		host = other.host;
@@ -51,6 +50,5 @@ struct Params {
 			   port == 0 && body_size_limit == 0 && locations.empty();
 	}
 };
-
 
 #endif //ZERO_WEBSERV_CONFIGPARAMS_HPP

@@ -17,4 +17,6 @@ elif os.path.isfile(path):
 
 main_page = get_head_html('autoindex') + body + "</body>\n</html>"
 
-print(get_response() + "\r\n\r\n" + main_page + '\r\n\r\n')
+print(get_response().format(server=os.environ['SERVER_NAME'],
+                            cont_type=os.environ['CONTENT_TYPE'],
+                            cont_len=len(main_page.encode('utf-8'))) + "\r\n\r\n" + main_page, end='')

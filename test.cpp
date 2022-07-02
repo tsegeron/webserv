@@ -6,18 +6,21 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <set>
 //#include "hdrs/Config.hpp"
 //#include "hdrs/SimpSocket.hpp"
-#include "hdrs/Utils.hpp"
+//#include "hdrs/Utils.hpp"
+//#include "hdrs/Config.hpp"
 
+void foo()
+{
+	static int a;
 
-
+	std::cout << ++a << std::endl;
+}
 
 int main(int ac, char **av, char **env)
 {
-	int len = -1;
-	while(env[++len]);
-
-	for (int i = 0; i < len; ++i)
-		std::cout << env[i] << std::endl;
+	for (int i = 0; i < 10; ++i)
+		foo();
 }
