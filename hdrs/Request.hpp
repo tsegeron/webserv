@@ -19,6 +19,7 @@
 class Request {
 private:
 	std::string							_rawRequest;
+	std::string							_head;
 	std::string							_body;
 	std::map<std::string, std::string>	_request;
 	u_long								_contLength;
@@ -26,7 +27,7 @@ private:
 	char								_requestStatus;
 	char								_transferEncoding;
 
-	std::string	getChunk(std::string const &src);
+	bool	pushChunk(std::string const &);
 
 public:
 	Request() : _requestStatus(0x0), _transferEncoding(0x0) {};

@@ -38,6 +38,20 @@ namespace utils {
 		}
 	}
 
+	std::string	ltrim(std::string src, std::string const &chars)
+	{
+		src.erase(0, src.find_first_not_of(chars));
+
+		return src;
+	}
+
+	std::string	rtrim(std::string src, std::string const &chars)
+	{
+		src.erase(src.find_last_not_of(chars) + 1);
+
+		return src;
+	}
+
 	std::string	trim(std::string src, std::string const &chars)
 	{
 		src.erase(src.find_last_not_of(chars) + 1);
@@ -46,20 +60,33 @@ namespace utils {
 		return src;
 	}
 
-	std::vector<std::string>	split(std::string src, std::string const &delimiter)
+	std::vector<std::string>	split(std::string src, std::string const &delimiter, int maxsplit)
 	{
 		std::vector<std::string>	splitted;
 		std::string					tmp;
 		size_t						pos;
 
-		while ((pos = src.find(delimiter)) != std::string::npos)
+//		std::cout << src << std::endl;
+		while (!src.empty() && maxsplit)
 		{
+			pos = src.find(delimiter);
+			if (pos == 0)
+			{
+				src.erase(0, delimiter.size());
+				continue;
+			}
 			tmp = src.substr(0, pos);
-			if (!tmp.empty())
+
+			src.erase(0, pos);
+			if (!tmp.empty() || (tmp.empty() && src.empty()))
+			{
 				splitted.push_back(tmp);
-			src.erase(0, pos + delimiter.size());
+				maxsplit--;
+			}
 		}
-		if (!src.empty() || splitted.empty())
+		while (src.find(delimiter) == 0)
+			src.erase(0, delimiter.size());
+		if (splitted.empty() || !src.empty())
 			splitted.push_back(src);
 
 		return splitted;
@@ -112,3 +139,41 @@ namespace utils {
 		return src;
 	}
 }
+/*
+std::vector<std::string>	split(std::string src, std::string const &delimiter, int maxsplit)
+{
+	std::vector<std::string>	splitted;
+	std::string					tmp;
+	size_t						pos;
+
+	src = ltrim(src, delimiter);
+	while ((pos = src.find(delimiter)) != std::string::npos && maxsplit)
+	{
+		tmp = src.substr(0, pos);
+		if (!tmp.empty())
+		{
+			if (!splitted.empty() && (--splitted.end())->empty())
+			{
+				splitted.pop_back();
+				maxsplit++;
+			}
+			splitted.push_back(tmp);
+			maxsplit--;
+		}
+		else if (!splitted.empty() && !((--splitted.end())->empty()))
+		{
+			splitted.push_back(tmp);
+			maxsplit--;
+		}
+		src.erase(0, pos + delimiter.size());
+	}
+	if (!src.empty() || splitted.empty())
+	{
+		if (!splitted.empty() && (--splitted.end())->empty())
+			splitted.pop_back();
+		splitted.push_back(trim(src, delimiter));
+	}
+
+	return splitted;
+}
+ */

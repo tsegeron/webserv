@@ -9,18 +9,20 @@
 #include <set>
 //#include "hdrs/Config.hpp"
 //#include "hdrs/SimpSocket.hpp"
-//#include "hdrs/Utils.hpp"
+#include "hdrs/Utils.hpp"
 //#include "hdrs/Config.hpp"
 
-void foo()
-{
-	static int a;
-
-	std::cout << ++a << std::endl;
-}
 
 int main(int ac, char **av, char **env)
 {
-	for (int i = 0; i < 10; ++i)
-		foo();
+	std::string					str		= "12;\r\nSome Data\r\n";
+	std::vector<std::string>	words	= split(str, "\r\n", 2);
+
+	std::cout << words.size() << std::endl << "---------------------" << std::endl;
+
+	for (const auto &elem : words)
+		std::cout << elem;
+
+
+//	std::cout << ::strtol("01a\r\n", nullptr, 16) << std::endl;
 }
