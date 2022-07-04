@@ -20,7 +20,7 @@ void	Request::push_request(std::string requestPart)
 {
 	std::vector<std::string>	request;
 
-	std::cout << requestPart;
+//	std::cout << requestPart;
 	_rawRequest += requestPart;
 
 	if (!(_requestStatus & RE_HEAD) && _rawRequest.find("\r\n\r\n") == std::string::npos)
@@ -68,11 +68,12 @@ void	Request::parseBody(std::string const &body)
 		case RE_MULTI:
 		case RE_SOLID:
 			_request["Body"] += body;
+//			std::cout << _request["Body"].size() << "\t" << _contLength << std::endl;
 			if (_request["Body"].size() != _contLength)
 				return;
 			break;
 		case RE_CHUNK:
-			std::cout << "CHUNKED" << std::endl;
+//			std::cout << "CHUNKED" << std::endl;
 			if (!pushChunk(body))
 				return;
 			break;
@@ -85,25 +86,30 @@ void	Request::parseBody(std::string const &body)
 
 bool	Request::pushChunk(std::string const &chunk)
 {
-	std::vector<std::string>	splitted = split(chunk, "\r\n", 2);
+	std::vector<std::string>	splitted = split_chunk(chunk);
 
-	if (splitted.size() == 1)
+	if (splitted.size() != 2)
+	{
+		_requestStatus = RE_INVALID; // error 400
+		return false;
+	}
+	else
 	{
 		if (splitted.at(0) == "0")
 		{
 			_request["Body"] += "";
-			_requestStatus
+			return true;
 		}
+
+		long		chunk_size	= ::strtol(split(splitted[0], ";", 1).at(0).c_str(), nullptr, 16);
+		std::string	chunk_data	= splitted[1];
+
+		if (chunk_data.size() != chunk_size)
+			_requestStatus = RE_INVALID; // error 400
 		else
-			_requestStatus = RE_INVALID;
-		return false;
+			_request["Body"] += chunk_data;
 	}
-	else if (splitted.size() == 2)
-	{
-
-	}
-
-	return true;
+	return false;
 }
 
 void	Request::parseHeader(std::string const &header)
@@ -134,8 +140,12 @@ void	Request::parseHeader(std::string const &header)
 		_request["Transfer-Encoding"];
 	if (_request["Body"].empty())
 		_request["Body"];
-	if (_request["Accept"].empty())
-		_request["Accept"] = "*/*";
+//	if (!_request["Accept"].empty())
+//	{
+//		_request["Accept"] = split(_request["Accept"], ", ").at(0);
+//		std::cout << _request["Accept"] << std::endl;
+//	}
+	_request["Accept"] = "*/*";
 
 	if (!_transferEncoding)
 	{

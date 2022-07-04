@@ -66,7 +66,6 @@ namespace utils {
 		std::string					tmp;
 		size_t						pos;
 
-//		std::cout << src << std::endl;
 		while (!src.empty() && maxsplit)
 		{
 			pos = src.find(delimiter);
@@ -91,6 +90,24 @@ namespace utils {
 
 		return splitted;
 	}
+
+	std::vector<std::string>	split_chunk(std::string src)
+	{
+		std::vector<std::string>	splitted;
+		std::string					tmp;
+		size_t						pos;
+
+		do {
+			pos = src.find("\r\n");
+			if (pos == std::string::npos)
+				return splitted;
+			splitted.push_back(src.substr(0, pos));
+			src.erase(0, pos + 2);
+		} while(!src.empty());
+
+		return splitted;
+	}
+
 
 	std::string	readFile(std::string const &filename)
 	{

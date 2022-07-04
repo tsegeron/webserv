@@ -30,10 +30,11 @@ private:
 	Request			*_request;
 
 	std::string		_response;
+	int				_caseNum;
 
 	std::string		_username;
 
-	int			action_to_do(std::string &, int *);
+	int			action_to_do(std::string &);
 	std::string	is_autoindex();
 	bool		is_redirect();
 	bool		is_cgi();
@@ -50,9 +51,9 @@ public:
 //	virtual ~Response();
 
 	std::string	getResponse()		const { return _response; };
-	size_t		getRespLength()		const { return _response.size() + 1; };
+	size_t		getRespLength()		const { return _response.size(); };
 	size_t		getHeaderLength()	const { return _header.size(); };
-	size_t		getBodyLength()		const { return _header.size(); };
+	size_t		getBodyLength()		const { return _body.size(); };
 
 	int			process();
 

@@ -1,0 +1,61 @@
+[2022-07-04 18:33:53]	Applying config default.conf
+[2022-07-04 18:33:53]	Server #1 started on http://127.0.0.1:8080
+[2022-07-04 18:33:53]	Server #2 started on http://127.0.0.1:8000
+[2022-07-04 18:33:53]	Server #3 started on http://127.0.0.1:8081
+[2022-07-04 18:34:03]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:34:03]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:34:03]	GET / 307 Temporary Redirect 0
+[2022-07-04 18:34:03]	GET /home 200 OK 1220
+[2022-07-04 18:34:18]	GET /home 200 OK 1220
+[2022-07-04 18:34:23]	GET /logout 200 OK 741
+[2022-07-04 18:34:23]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:34:28]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:34:28]	GET /pages 200 OK 765
+[2022-07-04 18:35:46]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:39:38]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:54:37]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:54:37]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:54:37]	GET /profile/upload 200 OK 0
+[2022-07-04 18:54:37]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:54:39]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:54:39]	GET /profile/upload 200 OK 0
+[2022-07-04 18:54:39]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:54:44]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:54:44]	GET /profile/upload 200 OK 0
+[2022-07-04 18:54:44]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:54:45]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:54:45]	GET /profile/upload 200 OK 0
+[2022-07-04 18:54:45]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:55:15]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:55:15]	GET /profile/upload 200 OK 0
+[2022-07-04 18:55:15]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:55:19]	GET /profile/upload 200 OK 0
+[2022-07-04 18:55:19]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:55:19]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:56:19]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:56:19]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:56:19]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:56:19]	GET /profile/upload 200 OK 0
+[2022-07-04 18:56:19]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:58:02]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:58:02]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:58:02]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:58:02]	GET /profile/upload 200 OK 0
+[2022-07-04 18:58:02]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:58:03]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:58:03]	GET /profile/upload 200 OK 0
+[2022-07-04 18:58:03]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 18:59:08]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 18:59:08]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 18:59:08]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 18:59:08]	GET / 307 Temporary Redirect 0
+[2022-07-04 18:59:08]	GET /home 200 OK 1220
+[2022-07-04 19:00:48]	Client 127.0.0.1:8080 disconnected [8]
+[2022-07-04 19:04:48]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 19:32:05]	New connection on 127.0.0.1:8080 [7]
+[2022-07-04 19:32:05]	New connection on 127.0.0.1:8080 [8]
+[2022-07-04 19:32:05]	GET / 307 Temporary Redirect 0
+[2022-07-04 19:32:05]	GET /home 200 OK 1220
+[2022-07-04 19:32:06]	GET /profile 200 OK 1128
+[2022-07-04 19:32:06]	Client 127.0.0.1:8080 disconnected [7]
+[2022-07-04 19:33:26]	Client 127.0.0.1:8080 disconnected [8]

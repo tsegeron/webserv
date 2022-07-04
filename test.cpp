@@ -15,14 +15,15 @@
 
 int main(int ac, char **av, char **env)
 {
-	std::string					str		= "12;\r\nSome Data\r\n";
-	std::vector<std::string>	words	= split(str, "\r\n", 2);
-
+	std::string					str		= "124111some data";
+//	std::string					str		= "\r\n";
+	std::vector<std::string>	words	= split(str, "111", 0);
+//
 	std::cout << words.size() << std::endl << "---------------------" << std::endl;
 
 	for (const auto &elem : words)
-		std::cout << elem;
+		std::cout << elem << std::endl;
 
 
-//	std::cout << ::strtol("01a\r\n", nullptr, 16) << std::endl;
+//	std::cout << ::strtol("1a\r\n", nullptr, 16) << std::endl;
 }

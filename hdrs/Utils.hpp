@@ -51,6 +51,7 @@ namespace utils {
 	std::string					rtrim(std::string, std::string const &chars=" \t\n\v\f\r");
 	std::string					trim(std::string, std::string const &chars=" \t\n\v\f\r");
 	std::vector<std::string>	split(std::string, std::string const &delimiter=" ", int maxsplit = -1);
+	std::vector<std::string>	split_chunk(std::string src);
 	std::string					readFile(std::string const &);
 	void						print_rawRequest(std::string const &request);
 	void						print_fullRequest(std::map<std::string, std::string> const &request);

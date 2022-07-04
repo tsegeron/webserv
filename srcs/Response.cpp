@@ -34,10 +34,10 @@ Response::Response(Params &config, Request *request)
 
 int		Response::process()
 {
-	int			caseNum = 0;
 	std::string	param;
 
-	switch (action_to_do(param, &caseNum))
+	_caseNum = 0;
+	switch (action_to_do(param))
 	{
 		case bootstrap:
 			_body = utils::readFile(utils::trim(_request->getPath(), "./"));
@@ -56,13 +56,7 @@ int		Response::process()
 		case other:
 			break;
 	}
-	if (caseNum)
-		craftResponse();
-	else
-	{
-		_header = split(_response, "\r\n\r\n").at(0);
-		_body	= split(_response, "\r\n\r\n").size() == 2 ? split(_response, "\r\n\r\n").at(1) : "";
-	}
+	craftResponse();
 
 	utils::logging(	_request->getMethod()				+ " " +
 					_request->getPath()					+ " " +
@@ -70,23 +64,23 @@ int		Response::process()
 					_statusPhrase.at(_statusCode)	+ " " +
 					std::to_string(_body.size()));
 
-	return caseNum;
+	return _caseNum;
 }
 
-int			Response::action_to_do(std::string &param, int *caseNum)
+int			Response::action_to_do(std::string &param)
 {
 	if (_request->getPath().find("bootstrap") != std::string::npos)
-		return *caseNum = bootstrap;
+		return _caseNum = bootstrap;
 	if (is_redirect())
-		return *caseNum = redirection;
+		return _caseNum = redirection;
 	if (!(param = is_autoindex()).empty())
 		return autoindexation;
 	if (!is_valid())
-		return *caseNum = invalid;
+		return _caseNum = invalid;
 	else
 		if (is_cgi())
 			return cgi;
-	return *caseNum = other;
+	return _caseNum = other;
 }
 
 std::string	Response::getCgiResponse(std::string const &path, std::string const &filename) const
@@ -98,9 +92,6 @@ std::string	Response::getCgiResponse(std::string const &path, std::string const 
 
 	bzero(&buf, 10000);
 	tmp_env = getCgiEnv(path, filename);
-//	for (int i = 0; tmp_env[i]; ++i)
-//		std::cout << tmp_env[i] << std::endl;
-//	exit(1);
 	pipe(fd);
 	pid = fork();
 	if (!pid)
@@ -136,9 +127,6 @@ char	**Response::getCgiEnv(std::string const &path, std::string const &filename)
 	envp_vec.push_back("CONTENT_TYPE=" + _request->getAccept());
 	envp_vec.push_back("CONTENT_LENGTH=" + std::to_string(1000));
 	envp_vec.push_back("HTTP_USER_AGENT=" + _request->getRequest().at("User-Agent"));
-//	if (tmp.size() < 2)
-//		envp_vec.push_back("QUERY_STRING=");
-//	else
 	envp_vec.push_back("QUERY_STRING=" + _request->getBody());
 //	envp_vec.push_back("REMOTE_ADDR=" + _request.get());
 	envp_vec.push_back("REMOTE_HOST=" + _request->getHost());
@@ -220,9 +208,12 @@ bool	Response::is_valid()
 
 //	checks if requested METHOD allowed
 	try {
-		if (_request->getMethod() != "GET" && _request->getMethod() != "POST" &&
-			_request->getMethod() != "DELETE" && _request->getMethod() != "PUT")
+		if (_request->getMethod() != "GET" && _request->getMethod() != "HEAD" &&
+			_request->getMethod() != "POST" && _request->getMethod() != "PUT" &&
+			_request->getMethod() != "DELETE")
 			return !(_statusCode = 501);
+//		if (_request->getMethod() == "HEAD" && confLocation.at("methods").find("GET") != std::string::npos)
+//			return true;
 		if (confLocation.at("methods").find(_request->getMethod()) == std::string::npos)
 			return !(_statusCode = 405);
 	}
@@ -235,18 +226,31 @@ bool	Response::is_valid()
 
 void	Response::craftResponse()
 {
-	craftHeader();
-	_response = _header + _body;
+	if (_caseNum)
+		craftHeader();
+	else
+	{
+		_header	= split(_response, "\r\n\r\n", 1).at(0) + "\r\n\r\n";
+		_body	= split(_response, "\r\n\r\n", 1).size() == 2 ? split(_response, "\r\n\r\n", 1).at(1) : "";
+	}
+
+	if (_request->getMethod() != "HEAD")
+		_response = _header + _body;
+	else
+	{
+		_response = _header;
+		_body.clear();
+	}
 }
 
 void	Response::craftHeader()
 {
 	_header = _request->getRequest()["Protocol"] + " " +
 			  std::to_string(_statusCode) + " " +
-			  _statusPhrase.at(_statusCode) + "\r" +
-			  "Server: " + _config.server_name + "\r" +
-			  "Connection: keep-alive\r" +
-			  "Content-Length: " + std::to_string(_body.size()) + "\r";
+			  _statusPhrase.at(_statusCode) + "\r\n" +
+			  "Server: " + _config.server_name + "\r\n" +
+			  "Connection: keep-alive\r\n" +
+			  "Content-Length: " + std::to_string(_body.size()) + "\r\n";
 	if (_statusCode == 301 || _statusCode == 307)
 	{
 		std::map<std::string, std::string>	tmp = _request->getRequest();
@@ -254,6 +258,9 @@ void	Response::craftHeader()
 				utils::trim(_config.locations.at(_request->getPath()).at("redirect"), "/") + "\r";
 //		std::cout << _header << std::endl;
 	}
+	if (_request->getPath().find("css") != std::string::npos)
+		_header += "Content-Type: text/css\r\n\r\n";
+	else
 	_header += "Content-Type: " + _request->getAccept() + "\r\n\r\n";
 
 }

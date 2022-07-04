@@ -39,8 +39,8 @@ private:
 	Sockets			_sockets;
 	Clients			_clients;
 	Requests		_requests;
-	Kevent			_chList, _evList; // events we want to monitor, events that were triggered
-	struct kevent	_test[1024];
+//	Kevent			_chList, _evList; // events we want to monitor, events that were triggered
+	struct kevent	_evList[1024]; // events that were triggered
 
 	struct timespec	_timeout = { TIMEOUT, 0 };
 	int				_kq;

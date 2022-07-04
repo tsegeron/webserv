@@ -7,6 +7,7 @@ int main(int ac, char **av)
 	{
 		Server testServer(av);
 		testServer.runServer();
+//		testServer.stopServer();	// on signals
 	}
 	catch (std::exception &ex)
 	{
