@@ -29,7 +29,7 @@ If none is provided it will use the default one. `*.config` extension is essenti
 ```
 ./webserv config/deafult.config
 ```
-4. Click the URL the server is started on
+4. Click the URL the server is started on to open a page in browser (recommended to use Chrome)
 5. If `500. Server error is occured` try configuring python interpreter to the 3.*v
 and try different URLs from config file.
 
